@@ -18,4 +18,4 @@ All notable changes will be documented here. The format is inspired by Keep a Ch
 - Structured JSON output and CI guard (`--fail-on-full`).
 - Doctor and init helpers, security documentation, and automated tests.
 
-Note: 0.1.0 is a local release candidate; it is not published to npm or GitHub Releases yet.
+Published on GitHub Releases: https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0. npm registry publication has not been completed.

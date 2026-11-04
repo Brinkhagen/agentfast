@@ -9,7 +9,7 @@
   [![MIT license](https://img.shields.io/badge/license-MIT-22D6EA?style=flat-square)](LICENSE)
   [![Node 20+](https://img.shields.io/badge/node-%E2%89%A520-59DBB5?style=flat-square)](package.json)
   [![No runtime dependencies](https://img.shields.io/badge/runtime_deps-0-A883FF?style=flat-square)](package.json)
-  [![Release candidate](https://img.shields.io/badge/status-v0.1.0_RC-FCC56C?style=flat-square)](CHANGELOG.md)
+  [![Latest GitHub Release](https://img.shields.io/github/v/release/Brinkhagen/agentfast?style=flat-square&color=22D6EA)](https://github.com/Brinkhagen/agentfast/releases/latest)
 
   [Why AgentFast?](#why-agentfast) · [Install](#quick-start) · [How it works](#how-it-works) · [Safety policy](#safety-first) · [Contribute](CONTRIBUTING.md) · [Roadmap](docs/ROADMAP.md)
 </div>
@@ -43,9 +43,18 @@ Both visuals are styled presentations of output from `node examples/demo.mjs`; t
 
 ## Quick start
 
-> **Publication status:** v0.1.0 is currently a source release candidate, **not yet published to npm or GitHub Releases**. Install from this repository after it has been created, or run the CLI from the provided source archive.
+> **Available now:** [AgentFast v0.1.0 is published on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0), including an installable `.tgz` package. **It is not yet published to the npm registry.** Download the release asset or clone the source.
 
 **Requirements:** Node.js 20+ and Git.
+
+**Fast installation from the GitHub Release (without npm registry):**
+
+```bash
+npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.1.0/brinkhagen-agentfast-0.1.0.tgz
+agentfast --help
+```
+
+**Alternatively, install from source:**
 
 ```bash
 # After the public repo has been created:
