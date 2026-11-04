@@ -4,6 +4,8 @@
   **Ship faster. Verify smarter.**  
   *Conservative, explainable test planning for AI-assisted code changes.*
 
+  [![CI](https://github.com/Brinkhagen/agentfast/actions/workflows/ci.yml/badge.svg)](https://github.com/Brinkhagen/agentfast/actions/workflows/ci.yml)
+  [![CodeQL](https://github.com/Brinkhagen/agentfast/actions/workflows/codeql.yml/badge.svg)](https://github.com/Brinkhagen/agentfast/actions/workflows/codeql.yml)
   [![MIT license](https://img.shields.io/badge/license-MIT-22D6EA?style=flat-square)](LICENSE)
   [![Node 20+](https://img.shields.io/badge/node-%E2%89%A520-59DBB5?style=flat-square)](package.json)
   [![No runtime dependencies](https://img.shields.io/badge/runtime_deps-0-A883FF?style=flat-square)](package.json)
