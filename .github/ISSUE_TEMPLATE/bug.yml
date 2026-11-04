@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible AgentFast problem
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the expected result, actual result and steps to reproduce.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Node version, operating system, Git version and AgentFast version.
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Minimal sanitized example
+      description: Do not share secrets or private code.

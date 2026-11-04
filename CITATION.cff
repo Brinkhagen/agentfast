@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use AgentFast in a publication, please cite the project repository."
+title: "AgentFast"
+type: software
+authors:
+  - family-names: "BRINKHAGEN"
+    given-names: "Open Source"
+repository-code: "https://github.com/Brinkhagen/agentfast"
+license: MIT
+version: "0.1.0"
+date-released: "2026-11-04"
