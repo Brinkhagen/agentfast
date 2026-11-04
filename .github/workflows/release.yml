@@ -1,0 +1,53 @@
+name: GitHub Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/release.yml"
+      - ".github/RELEASE_NOTES_v0.1.0.md"
+      - "package.json"
+      - "package-lock.json"
+      - "bin/**"
+      - "src/**"
+      - "tests/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agentfast-release-v0.1.0
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Verify and release v0.1.0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify release candidate
+        run: npm run verify
+      - name: Verify version
+        run: node -e "if(require('./package.json').version!=='0.1.0') process.exit(1)"
+      - name: Pack distributable
+        run: npm pack
+      - name: Publish GitHub release if absent
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release v0.1.0 already exists; avoiding an accidental overwrite."
+          else
+            gh release create v0.1.0 ./brinkhagen-agentfast-0.1.0.tgz \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "AgentFast v0.1.0 — First public beta" \
+              --notes-file .github/RELEASE_NOTES_v0.1.0.md
+          fi

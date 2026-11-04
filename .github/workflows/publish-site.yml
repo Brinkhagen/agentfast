@@ -1,0 +1,38 @@
+name: Publish Website Branch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/publish-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agentfast-website
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Keep gh-pages branch current
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify website assets
+        shell: bash
+        run: |
+          test -f docs/index.html
+          test -f docs/assets/agentfast-mark.svg
+          test -f docs/assets/agentfast-hero.svg
+          test -f docs/assets/cli-targeted.svg
+          test -f docs/assets/cli-full.svg
+      - name: Publish static website to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          force_orphan: true
+          enable_jekyll: false
