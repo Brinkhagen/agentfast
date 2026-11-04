@@ -1,0 +1,51 @@
+{
+  "name": "@brinkhagen/agentfast",
+  "version": "0.1.0",
+  "description": "Conservative, explainable test planning for AI-assisted code changes.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "author": "BRINKHAGEN UG (haftungsbeschränkt)",
+  "homepage": "https://github.com/Brinkhagen/agentfast#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brinkhagen/agentfast.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Brinkhagen/agentfast/issues"
+  },
+  "bin": {
+    "agentfast": "./bin/agentfast.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "check": "node --check bin/agentfast.js && node --check src/cli.js && node --check src/git.js && node --check src/analyze.js && node --check src/report.js",
+    "verify": "npm run check && npm test",
+    "demo": "node bin/agentfast.js check --base HEAD",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "test-selection",
+    "ai-coding",
+    "codex",
+    "claude-code",
+    "git-diff",
+    "vitest",
+    "jest",
+    "developer-tools",
+    "change-impact",
+    "ci"
+  ]
+}
