@@ -57,7 +57,6 @@ agentfast --help
 **Alternatively, install from source:**
 
 ```bash
-# After the public repo has been created:
 git clone https://github.com/Brinkhagen/agentfast.git
 cd agentfast
 npm ci
@@ -168,6 +167,7 @@ Read the [security policy](SECURITY.md).
 AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welcome bug reports, test fixtures, docs improvements, and contributions that make recommendations safer and more useful.
 
 - [Contributing guide](CONTRIBUTING.md)
+- [Maintainers and project governance](MAINTAINERS.md)
 - [Code of conduct](CODE_OF_CONDUCT.md)
 - [Security policy](SECURITY.md)
 - [Project roadmap](docs/ROADMAP.md)
@@ -175,7 +175,8 @@ AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welco
 - [Release checklist](docs/RELEASE.md)
 - [Brand assets](docs/BRAND.md)
 - [Coding-agent integration](docs/AGENT-INTEGRATION.md)
-- [Launch kit](docs/LAUNCH-KIT.md)
+- [Launch kit: Show HN, Reddit, DEV and social posts](docs/LAUNCH-KIT.md)
+- [Community growth and adoption evidence](docs/GROWTH.md)
 
 **License:** [MIT](LICENSE), © 2026 BRINKHAGEN UG (haftungsbeschränkt).  
 **Disclaimer:** Independent community tooling. Not affiliated with or endorsed by OpenAI, Anthropic, GitHub, Vitest, Jest, or other vendors.
