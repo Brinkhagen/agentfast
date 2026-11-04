@@ -8,7 +8,7 @@ GitHub Releases: https://github.com/Brinkhagen/agentfast/releases
 
 ## Website
 
-The `Publish Website Branch` workflow copies the static site under `docs/` into the `gh-pages` branch. GitHub Pages still needs to be enabled in the repository's Settings → Pages → **Deploy from a branch** → `gh-pages` / `/(root)`.
+The `Publish Website Branch` workflow also mirrors the static site under `docs/` into `gh-pages`. **Recommended for initial activation:** GitHub repository Settings → Pages → **Deploy from a branch** → `main` / `/docs` → Save. This uses the checked-in source site directly. The mirrored `gh-pages` branch is an alternative, but automatic pushes created by `GITHUB_TOKEN` do not by themselves trigger a Pages build.
 
 Until that setting is enabled and a deployment is verified, **do not claim the website is live**.
 
