@@ -177,6 +177,7 @@ AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welco
 - [Coding-agent integration](docs/AGENT-INTEGRATION.md)
 - [Launch kit: Show HN, Reddit, DEV and social posts](docs/LAUNCH-KIT.md)
 - [Community growth and adoption evidence](docs/GROWTH.md)
+- [GitHub discoverability and recommended topics](docs/DISCOVERABILITY.md)
 
 **License:** [MIT](LICENSE), © 2026 BRINKHAGEN UG (haftungsbeschränkt).  
 **Disclaimer:** Independent community tooling. Not affiliated with or endorsed by OpenAI, Anthropic, GitHub, Vitest, Jest, or other vendors.
