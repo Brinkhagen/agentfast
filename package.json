@@ -1,6 +1,6 @@
 {
   "name": "@brinkhagen/agentfast",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Conservative, explainable test planning for AI-assisted code changes.",
   "type": "module",
   "private": false,
