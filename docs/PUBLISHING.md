@@ -2,7 +2,7 @@
 
 ## GitHub Release
 
-When the initial GitHub Release workflow runs, it checks the package, executes the full test suite, creates an npm tarball and publishes v0.1.0 only if no matching GitHub Release exists. It does **not** publish to npm.
+When the GitHub Release workflow runs after successful CI, it checks the package, executes the full test suite, creates an npm tarball and publishes v0.2.0 only if no matching GitHub Release exists. It does **not** publish to npm.
 
 GitHub Releases: https://github.com/Brinkhagen/agentfast/releases
 
