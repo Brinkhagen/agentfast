@@ -1,16 +1,29 @@
 # AgentFast — public launch kit
 
-**Version:** v0.1.0 public beta · **Maintainer:** [BRINKHAGEN](https://github.com/Brinkhagen) · **License:** MIT
+**Version:** v0.2.0 public beta · **Maintainer:** [BRINKHAGEN](https://github.com/Brinkhagen) · **License:** MIT
 
 This is the official, ready-to-use communications kit for an **existing, working beta**, not a claim of widespread adoption or measurable speedups.
 
 - **Code and docs:** https://github.com/Brinkhagen/agentfast
-- **Versioned release:** https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0
+- **Versioned release:** https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0
 - **Issue tracker:** https://github.com/Brinkhagen/agentfast/issues
 - **CI:** https://github.com/Brinkhagen/agentfast/actions/workflows/ci.yml
 - **Visuals:** [Hero SVG](assets/agentfast-hero.svg) · [Wordmark SVG](assets/agentfast-wordmark.svg) · [Targeted advice](assets/cli-targeted.svg) · [Full-suite advice](assets/cli-full.svg)
 
 > **Accuracy note:** AgentFast recommends test scope. It does **not** automatically run suites, independently prove coverage or guarantee reduced cost/time. Complete protected CI stays mandatory. Node.js 20+ and Git are required. There is no published npm registry package as of this kit; the GitHub release contains an installable `.tgz`.
+
+## Live outreach assets (November 2026)
+
+- [Official v0.2.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0) — available for anyone to install.
+- [10-minute beta guide](BETA-TESTING.md) and [feedback template](https://github.com/Brinkhagen/agentfast/issues/new?template=beta-feedback.yml) — real tester onboarding.
+- [Published technical article source](articles/which-tests-after-ai-code.html) and [GitHub Pages article URL](https://brinkhagen.github.io/agentfast/articles/which-tests-after-ai-code.html).
+- [Full DEV Community article draft](launch/dev-community-article.md) and [RSS feed](feed.xml) for optional DEV cross-post import. The DEV post is not published without an authorized DEV account.
+- [GitHub Pages beta CTA](index.html) and visible CLI examples.
+- [Official Show HN guidelines](https://news.ycombinator.com/showhn.html) — submit the actual repository URL, not only a blog post, and be available to discuss.
+
+**Publishing status:** GitHub-hosted source, article and launch assets are committed. Reddit, Hacker News and DEV require account login/authorization; these external posts have not been submitted from this repository. Do not present draft copy as a published social post.
+
+**Honest adoption evidence:** GitHub Actions clones are not confirmed real users; the first observed 1 star was the maintainer's own. Track independent issues, clean-install results, referred visitors and versioned release downloads separately.
 
 ## Positioning
 
@@ -23,7 +36,7 @@ This is the official, ready-to-use communications kit for an **existing, working
 
 **What makes it different:** It does not pretend that running fewer tests is automatically safe. It reports *why* it recommends targeted feedback or a full suite and takes a conservative fallback when a dependency graph is incomplete or sensitive paths change.
 
-**GitHub topics:** `ai-coding`, `codex`, `claude-code`, `test-automation`, `developer-tools`, `typescript`, `nodejs`, `git`, `cli`, `open-source`.  
+**Live GitHub topics:** `ai-coding`, `claude-code`, `cli`, `codex`, `coding-agents`, `developer-tools`, `git-diff`, `local-first`, `nodejs`, `test-impact-analysis`, `test-selection`, `typescript`.  
 Topics and About metadata must be applied through repository settings by someone with appropriate permissions; these aren't set by a Markdown file.
 
 ## Launch channels (drafts — publish only after checking each community's rules)
@@ -56,7 +69,7 @@ Topics and About metadata must be applied through repository settings by someone
 
 > I use AI coding tools and got tired of a recurring tradeoff: run everything after every small edit, or trust a quick targeted test run too much.
 >
-> I've released **AgentFast v0.1.0**, an MIT-licensed, zero-runtime-dependency Node.js CLI. It analyzes Git changes and local JS/TS imports, recommends related tests for simple changes, and **defaults to full testing** for things like auth, payment code, Prisma migrations, CI config or incomplete dependency analysis.
+> I've released **AgentFast v0.2.0**, an MIT-licensed, zero-runtime-dependency Node.js CLI. It analyzes Git changes and local JS/TS imports, recommends related tests for simple changes, and **defaults to full testing** for things like auth, payment code, Prisma migrations, CI config or incomplete dependency analysis.
 >
 > No API key, no telemetry, and no automatic skipping of your existing CI. The JSON output is meant to be easy to use alongside Codex/Claude workflows.
 >
@@ -95,7 +108,7 @@ This is a small public beta, not a benchmark victory. I'm looking for practical 
 
 AI coding agents can help write changes quickly. Deciding **how to verify** those changes still needs human judgment.
 
-We've open-sourced **AgentFast v0.1.0**, a local CLI that inspects Git changes and offers explainable, conservative test-planning advice. It suggests focused feedback for ordinary changes and broad testing for risky or uncertain ones.
+We've open-sourced **AgentFast v0.2.0**, a local CLI that inspects Git changes and offers explainable, conservative test-planning advice. It suggests focused feedback for ordinary changes and broad testing for risky or uncertain ones.
 
 MIT-licensed · Node.js 20+ · no API key · zero runtime dependencies.
 
@@ -106,7 +119,7 @@ https://github.com/Brinkhagen/agentfast
 
 ### Short-form post
 
-Shipped AgentFast v0.1.0 ⚡
+Shipped AgentFast v0.2.0 ⚡
 
 A free, local CLI for conservative test planning after Codex/Claude-assisted code changes.
 
@@ -128,7 +141,7 @@ Use actual terminal output when recording; do **not** present an illustrative SV
 
 ## Frequently asked questions
 
-**Is this another LLM wrapper?** No. Version 0.1.0 is a deterministic, local CLI; no API account is needed.
+**Is this another LLM wrapper?** No. Version 0.2.0 is a deterministic, local CLI; no API account is needed.
 
 **Does it automatically execute only safe tests?** No. It recommends scope; the developer or CI decides what to run.
 
