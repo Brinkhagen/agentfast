@@ -86,7 +86,7 @@ test('Markdown output is suitable for PR and GitHub Actions summaries',t=>{
  assert.match(text,/## AgentFast — change risk advisory/);
  assert.match(text,/Targeted tests suggested/);
  assert.match(text,/tests\/math\.test\.js/);
- assert.match(text,/full required CI checks/i);
+ assert.match(text,/Run all required CI checks before merging or releasing/i);
 });
 test('Markdown report escapes untrusted file paths',t=>{
  const root=fixture(t,demo);write(root,'src/math.js','export const add=3;');
@@ -102,7 +102,7 @@ test('Markdown output supports full-suite safety recommendation',t=>{
  write(root,'src/auth/session.js','export const x=2;');
  const result=run(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--format','markdown'],root);
  assert.match(result,/Full test suite recommended/);
- assert.match(result,/AUTH_CHANGE/);
+ assert.match(result,/AUTH\\_CHANGE/);
 });
 test('safe --output creates report but never overwrites',t=>{
  const root=fixture(t,demo);write(root,'src/math.js','export const add=4;');
