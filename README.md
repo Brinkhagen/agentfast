@@ -17,6 +17,8 @@
 <p align="center"><img src="docs/assets/agentfast-hero.svg" alt="AgentFast visual concept art with Git diff and test planning terminal" width="100%"></p>
 <p align="center"><sub>Conceptual brand illustration. The current CLI analyzes and recommends tests; it does not execute them automatically.</sub></p>
 
+> **🧪 Beta testers wanted!** If you use coding agents or work with Node.js/TypeScript, please try the [10–15 minute beta test](docs/BETA-TESTING.md) and tell us what breaks. [Submit feedback](https://github.com/Brinkhagen/agentfast/issues/new?template=beta-feedback.yml). No API key, signup, or positive review required.
+
 ## Why AgentFast?
 
 AI-assisted coding is fast. Verification can be slow or dangerously superficial. A small change may trigger every test, while a seemingly harmless file edit can affect authentication, billing, or a database migration.
