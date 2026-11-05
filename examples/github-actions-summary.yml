@@ -1,0 +1,28 @@
+# Example for a repository that wants AgentFast risk guidance on PRs.
+# This is documentation, not an automatically installed GitHub Action.
+# Required full CI must continue to run independently.
+name: AgentFast advisory example
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  risk-advisory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install versioned AgentFast beta
+        run: npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.2.0/brinkhagen-agentfast-0.2.0.tgz
+      - name: Write advisory to GitHub Actions run summary
+        shell: bash
+        run: |
+          git fetch origin main
+          agentfast check --base origin/main --format markdown >> "$GITHUB_STEP_SUMMARY"
+      # This job creates an advisory. It does not replace normal tests.
