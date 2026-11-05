@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, renameSync, unlinkSync, symlinkSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, renameSync, unlinkSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { listChanges, parseNameStatusZ, GitError } from '../src/git.js';
 import { classify, isTest, discover, selectPlan } from '../src/analyze.js';
-import { formatReport } from '../src/report.js';
+import { formatReport, formatMarkdownReport } from '../src/report.js';
 
 function run(command,args,cwd) {
  const r=spawnSync(command,args,{cwd,encoding:'utf8',timeout:10000});
@@ -77,4 +77,61 @@ test('symlink scan stays within repo',t=>{
  t.after(()=>rmSync(other,{recursive:true,force:true}));write(other,'secret.js','const secret=true;');
  try{symlinkSync(other,join(root,'external'),'dir');}catch(e){if(process.platform==='win32'&&e.code==='EPERM'){t.skip();return;}throw e;}
  assert.ok(!discover(root).files.some(x=>x.includes('secret')));
+});
+
+
+test('Markdown output is suitable for PR and GitHub Actions summaries',t=>{
+ const root=fixture(t,demo);write(root,'src/math.js','export const add=3;');
+ const text=run(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--format','markdown'],root);
+ assert.match(text,/## AgentFast — change risk advisory/);
+ assert.match(text,/Targeted tests suggested/);
+ assert.match(text,/tests\/math\.test\.js/);
+ assert.match(text,/full required CI checks/i);
+});
+test('Markdown report escapes untrusted file paths',t=>{
+ const root=fixture(t,demo);write(root,'src/math.js','export const add=3;');
+ const plan=analyze(root);
+ plan.risks=[{code:'AUTH_CHANGE',path:'src/auth/<script>|unsafe*.ts'}];
+ const report=formatMarkdownReport(plan);
+ assert.match(report,/&lt;script&gt;/);
+ assert.match(report,/&#124;/);
+ assert.doesNotMatch(report,/<script>/);
+});
+test('Markdown output supports full-suite safety recommendation',t=>{
+ const root=fixture(t,{'src/auth/session.js':'export const x=1;'});
+ write(root,'src/auth/session.js','export const x=2;');
+ const result=run(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--format','markdown'],root);
+ assert.match(result,/Full test suite recommended/);
+ assert.match(result,/AUTH_CHANGE/);
+});
+test('safe --output creates report but never overwrites',t=>{
+ const root=fixture(t,demo);write(root,'src/math.js','export const add=4;');
+ const outfile=join(root,'report.md');
+ const first=spawnSync(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--format','markdown','--output',outfile],{encoding:'utf8'});
+ assert.equal(first.status,0,first.stderr);
+ const content=readFileSync(outfile,'utf8');
+ assert.match(content,/## AgentFast/);
+ const second=spawnSync(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--format','markdown','--output',outfile],{encoding:'utf8'});
+ assert.equal(second.status,1);
+ assert.equal(readFileSync(outfile,'utf8'),content);
+});
+test('JSON format aliases legacy --json',t=>{
+ const root=fixture(t,demo);write(root,'src/math.js','export const add=7;');
+ const a=run(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--json'],root);
+ const b=run(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--format','json'],root);
+ assert.deepEqual(JSON.parse(a),JSON.parse(b));
+});
+test('CLI rejects invalid formats and conflicting outputs',t=>{
+ const root=fixture(t,demo);
+ for(const args of [['check','--format','xml'],['check','--json','--format','markdown'],['doctor','--output','bad.txt']]){
+  const r=spawnSync(process.execPath,[resolve('bin/agentfast.js'),...args,'--root',root],{encoding:'utf8'});
+  assert.equal(r.status,1,JSON.stringify(args));
+ }
+});
+test('fail-on-full exit status remains 2 with Markdown output',t=>{
+ const root=fixture(t,{'src/auth/session.js':'export const x=1;'});
+ write(root,'src/auth/session.js','export const x=2;');
+ const r=spawnSync(process.execPath,[resolve('bin/agentfast.js'),'check','--root',root,'--format','markdown','--fail-on-full'],{encoding:'utf8'});
+ assert.equal(r.status,2,r.stderr);
+ assert.match(r.stdout,/Full test suite/);
 });
