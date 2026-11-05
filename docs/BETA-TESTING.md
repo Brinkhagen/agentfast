@@ -1,4 +1,4 @@
-# Beta testing AgentFast v0.1.0
+# Beta testing AgentFast v0.2.0
 
 AgentFast is a public, MIT-licensed **early beta**. We're looking for developers who regularly use Git, Node.js, TypeScript/JavaScript and AI coding tools. **No account, paid API, email signup or telemetry is required.**
 
@@ -16,7 +16,7 @@ npm run verify
 npm link
 ```
 
-You can instead download the package from [v0.1.0 GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0) if you prefer. The tool is **not** yet available on the npm public registry. No token or credentials are required.
+You can instead download the package from [v0.2.0 GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0) if you prefer. The tool is **not** yet available on the npm public registry. No token or credentials are required.
 
 ## 3 specific tests we need
 
@@ -25,6 +25,10 @@ You can instead download the package from [v0.1.0 GitHub Releases](https://githu
 3. **Risk classification.** If you have a suitable disposable test repository, add or modify an authentication-related file, then rerun the CLI. Is the full-suite recommendation understandable? Are the reason codes useful?
 
 The main question is **what did AgentFast get wrong or make confusing?** Please call out overly strict recommendations as well as any possible dangerous underestimation of risk.
+
+## New v0.2.0 feedback: Markdown reports
+
+Also try `agentfast check --format markdown` and `agentfast check --format markdown --output report.md` in a disposable repository. Does the Markdown make sense for a pull request? If you rerun the output command, it should refuse to overwrite the existing report. Please report incorrect behavior.
 
 ## Report your result
 
