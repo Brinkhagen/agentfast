@@ -42,6 +42,16 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="$(node -p "require('./package.json').version")"
+          LOCK_VERSION="$(node -p "require('./package-lock.json').version")"
+          if [[ "$VERSION" != "$LOCK_VERSION" ]]; then
+            echo "Package and lockfile versions disagree; release blocked." >&2
+            exit 1
+          fi
+          CURRENT_MAIN="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+          if [[ "$RELEASE_COMMIT" != "$CURRENT_MAIN" ]]; then
+            echo "A newer main commit exists. Releasing only the latest verified main commit."
+            exit 0
+          fi
           TAG="v$VERSION"
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
             echo "Refusing invalid semantic version: $VERSION" >&2
