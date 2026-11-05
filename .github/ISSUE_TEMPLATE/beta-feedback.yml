@@ -1,0 +1,56 @@
+name: Beta tester feedback
+description: Share a 10–15 minute first impression or a test-scope recommendation issue
+title: "[Beta]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for trying AgentFast! Please share honest feedback, including what didn't work.
+        **Do not paste secrets, credentials or proprietary source code.**
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: e.g. 22.x
+  - type: dropdown
+    id: result
+    attributes:
+      label: What did you test?
+      options:
+        - Installation and help/doctor
+        - Example demo
+        - Real-world diff recommendation
+        - JSON output
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What happened? What did you expect?
+      description: Tell us what was useful, confusing, incorrect, or missing.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproducible steps (optional)
+      description: Please sanitize file names and output; do not share proprietary code, keys or private data.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety
+      options:
+        - label: I removed secrets and private information from any shared snippets.
+          required: true
