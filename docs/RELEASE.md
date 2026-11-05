@@ -1,21 +1,28 @@
-# Release and deployment
+# Release and deployment policy
 
-The first public release has been published:
+AgentFast uses versioned GitHub Releases and **preserves all old releases and tags**.
 
-- [AgentFast v0.1.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0)
-- [GitHub Release automation](https://github.com/Brinkhagen/agentfast/actions/workflows/release.yml)
-- [Website branch automation](https://github.com/Brinkhagen/agentfast/actions/workflows/publish-site.yml)
+- [Release history](https://github.com/Brinkhagen/agentfast/releases)
+- [v0.1.0 source and package](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0)
+- [v0.2.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0) (when GitHub CI completes and the release is created)
+- [Cross-platform CI](https://github.com/Brinkhagen/agentfast/actions/workflows/ci.yml)
+- [Release automation](https://github.com/Brinkhagen/agentfast/actions/workflows/release.yml)
+- [Website publishing](https://github.com/Brinkhagen/agentfast/actions/workflows/publish-site.yml)
 
-The release attaches an installable `brinkhagen-agentfast-0.1.0.tgz` archive. **It is not yet listed in the npm registry.**
+## How releases work
 
-The website files are automatically copied to the `gh-pages` branch, but enabling GitHub Pages in repository settings may still be required. See [Publishing](PUBLISHING.md).
+1. A maintainer reviews changes and adds a regression test whenever safety recommendations could be affected.
+2. Update the package version in `package.json` and `package-lock.json`, the changelog, README and release notes.
+3. GitHub CI must pass on **Node 20 and 22 across Windows, macOS and Linux**.
+4. On successful CI for a push to the default branch, the release workflow verifies and packages the exact CI-tested commit.
+5. It creates a new `vX.Y.Z` GitHub Release only if that version does not exist. Published versions are **never silently replaced**.
+6. Failed CI prevents automated publication; fix the problems and rerun verification on a new commit.
 
-## Before subsequent releases
+This workflow does **not** publish to the public npm registry. Distribution is through a downloadable GitHub Release archive until npm publication is separately configured.
 
-1. Review issues, changes and safety impact.
-2. Add regression tests for any change that could recommend fewer tests.
-3. Run `npm ci && npm run verify` locally.
-4. Confirm CI on all supported operating systems.
-5. Update changelog, docs and package version.
-6. Review packaged files and publish an immutable versioned tag and release.
-7. Never claim features, downloads, adoption or benchmarks that haven't been verified.
+## Safety and limitations
+
+- Maintain full protected CI in consuming projects.
+- `targeted` is for rapid feedback only, not proof of adequate coverage.
+- Do not claim measured speedups, real user numbers or unrelated integrations without verifiable evidence.
+- Protect GitHub releases/tags from accidental deletion and review GitHub Actions changes carefully.
