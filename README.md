@@ -45,14 +45,14 @@ Both visuals are styled presentations of output from `node examples/demo.mjs`; t
 
 ## Quick start
 
-> **Available now:** [AgentFast v0.1.0 is published on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0), including an installable `.tgz` package. **It is not yet published to the npm registry.** Download the release asset or clone the source.
+> **Versioned beta:** [AgentFast v0.2.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0) includes an installable `.tgz` archive after CI verification. [v0.1.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0). **AgentFast has not yet been published to the npm registry.**
 
 **Requirements:** Node.js 20+ and Git.
 
 **Fast installation from the GitHub Release (without npm registry):**
 
 ```bash
-npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.1.0/brinkhagen-agentfast-0.1.0.tgz
+npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.2.0/brinkhagen-agentfast-0.2.0.tgz
 agentfast --help
 ```
 
@@ -80,7 +80,10 @@ node /path/to/agentfast/bin/agentfast.js check --root /path/to/your-project --ba
 
 ```bash
 agentfast check --base origin/main       # Diff against a branch reference
-agentfast check --json                   # Stable machine-readable advisory
+agentfast check --json                   # Legacy JSON mode; still supported
+agentfast check --format json            # Explicit JSON mode
+agentfast check --format markdown        # PR / GitHub Actions-ready summary
+agentfast check --format markdown --output report.md # Create a new report, never overwrite
 agentfast check --fail-on-full           # Exit 2 when full tests are advised
 agentfast doctor                         # Local environment and repository check
 agentfast init                           # Create AGENTFAST.md workflow guide
@@ -102,6 +105,27 @@ On a fresh checkout, ensure `origin/main` exists and you have fetched the base h
 ```
 
 The excerpt above shows the `decision` field from the complete versioned schema (`schemaVersion: 1`). The full report also includes changed paths, risk reasons, candidate tests, and analysis diagnostics.
+
+### New in v0.2.0: shareable Markdown risk reports
+
+Generate a report for GitHub issues, pull requests or CI reviews:
+
+```bash
+agentfast check --base origin/main --format markdown
+agentfast check --format markdown --output agentfast-report.md
+```
+
+Markdown includes the risk decision, reason codes, an overview of changed/scanned files, affected tests and warnings. Repository-controlled filenames are escaped before being included in Markdown.
+
+The `--output` option **creates a new file only**; it refuses to overwrite an existing file. The existing `--json` flag still works, and `schemaVersion: 1` is unchanged.
+
+For a GitHub Actions job summary, append Markdown output to `$GITHUB_STEP_SUMMARY`:
+
+```bash
+agentfast check --base origin/main --format markdown >> "$GITHUB_STEP_SUMMARY"
+```
+
+[Complete GitHub Actions example](examples/github-actions-summary.yml) · [Coding-agent integration](docs/AGENT-INTEGRATION.md)
 
 ### CI usage
 
@@ -173,6 +197,8 @@ AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welco
 - [Code of conduct](CODE_OF_CONDUCT.md)
 - [Security policy](SECURITY.md)
 - [Project roadmap](docs/ROADMAP.md)
+- [Version history](CHANGELOG.md)
+- [v0.2.0 release notes](.github/RELEASE_NOTES_v0.2.0.md)
 - [Architecture and limitations](docs/ARCHITECTURE.md)
 - [Release checklist](docs/RELEASE.md)
 - [Brand assets](docs/BRAND.md)
