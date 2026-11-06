@@ -4,7 +4,8 @@ AgentFast uses versioned GitHub Releases and **preserves all old releases and ta
 
 - [Release history](https://github.com/Brinkhagen/agentfast/releases)
 - [v0.1.0 source and package](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0)
-- [v0.2.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0) (when GitHub CI completes and the release is created)
+- [v0.2.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0)
+- [v0.3.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0) (after verified publication)
 - [Cross-platform CI](https://github.com/Brinkhagen/agentfast/actions/workflows/ci.yml)
 - [Release automation](https://github.com/Brinkhagen/agentfast/actions/workflows/release.yml)
 - [Website publishing](https://github.com/Brinkhagen/agentfast/actions/workflows/publish-site.yml)
