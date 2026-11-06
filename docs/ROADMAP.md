@@ -17,9 +17,15 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 - Example integration workflow and new regression tests
 - Version-aware release automation gated on complete CI success
 
+## v0.3.0 — November 6, 2026
+
+- Conservative tsconfig/jsconfig single-wildcard and exact path-alias resolution
+- JSONC configuration parsing, ambiguity checks, strict repository boundary enforcement
+- Regression coverage for supported and unsupported configurations
+- Portable Codex/Claude verification skill released with full CI checks
+
 ## Proposed next milestones (not shipped)
 
-1. **v0.3:** Resolve simple TypeScript path aliases safely. Avoid resolving outside the repository, and default to a full-suite recommendation on uncertainty. See [issue #4](https://github.com/Brinkhagen/agentfast/issues/4).
 2. **v0.4:** Improve monorepo/workspace analysis and independent framework integration, without creating false confidence about affected tests.
 3. **Validation:** Publish independently reproducible fixtures and compare recommendations with Vitest's native changed/related test selection. See [issue #5](https://github.com/Brinkhagen/agentfast/issues/5).
 4. **Distribution:** Evaluate publishing the package to the public npm registry; currently releases distribute a versioned `.tgz`.
