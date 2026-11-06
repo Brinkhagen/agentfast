@@ -2,10 +2,22 @@
 
 All notable changes to AgentFast are documented here. Keep old release notes and version tags available so beta testers can reproduce earlier behavior. Versions before 1.0.0 may change interfaces.
 
+## [0.3.0] - 2026-11-06
+
+### Added
+- Root tsconfig.json and jsconfig.json `compilerOptions.paths` resolution for simple exact and single-wildcard aliases.
+- JSONC comments and trailing commas supported in configuration.
+- Conservative full-test fallback for missing, unsafe, ambiguous, inherited and unsupported alias configurations.
+- A portable Codex/Claude Code verification skill and project-level integration instructions (merged earlier).
+
+### Compatibility and safety
+- JSON schema remains version 1; existing CLI flags and output formats are unchanged.
+- No new dependencies, external API usage, telemetry or automatic test execution.
+- Workspace aliases, extends/references, computed imports and advanced bundler resolution remain unsupported; use full required CI.
+
 ## [Unreleased]
 
 ### Planned
-- Safe TypeScript path alias support.
 - Better monorepo/workspace and test-framework interoperability.
 - Reproducible independent benchmarks measuring test-selection recall.
 

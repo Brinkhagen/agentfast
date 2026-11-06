@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, posix, sep } from 'node:path';
+import { loadAliases } from './aliases.js';
 
 const IGNORE_DIRS = new Set(['.git','node_modules','.next','.nuxt','.turbo','.cache','dist','build','coverage','.output','vendor','.venv','tmp','temp','out']);
 const SOURCE_EXTS = new Set(['.js','.jsx','.ts','.tsx','.mjs','.cjs','.mts','.cts','.json']);
@@ -55,7 +56,8 @@ function resolveLocalImport(importer,spec,lookup){
 }
 
 export function dependencyGraph(root,files){
-  const lookup=new Set(files),dependents=new Map(),ambiguous=[],tests=files.filter(isTest);
+  const aliasResolver = loadAliases(root);
+  const lookup=new Set(files),dependents=new Map(),ambiguous=[...aliasResolver.diagnostics],tests=files.filter(isTest);
   for(const file of files){
     if(!isScript(file))continue;
     let content;
@@ -71,8 +73,14 @@ export function dependencyGraph(root,files){
           if(!dependents.has(target))dependents.set(target,new Set());
           dependents.get(target).add(file);
         }else ambiguous.push({path:file,reason:`unresolved local import: ${spec}`});
-      }else if(/^(?:@\/|~\/|src\/|#)/.test(spec)){
-        ambiguous.push({path:file,reason:`unresolved alias import: ${spec}`});
+      }else{
+        const result = aliasResolver.resolve(spec, lookup);
+        if (result.kind === 'resolved') {
+          if (!dependents.has(result.path)) dependents.set(result.path, new Set());
+          dependents.get(result.path).add(file);
+        } else if (result.kind === 'unknown') {
+          ambiguous.push({path:file,reason:result.reason});
+        }
       }
     }
     if(/\b(?:import|require)\s*\(\s*(?!['"])/.test(content)){

@@ -45,14 +45,14 @@ Both visuals are styled presentations of output from `node examples/demo.mjs`; t
 
 ## Quick start
 
-> **Versioned beta:** [AgentFast v0.2.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0) includes an installable `.tgz` archive after CI verification. [v0.1.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0). **AgentFast has not yet been published to the npm registry.**
+> **Versioned beta:** [AgentFast v0.3.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0) includes an installable `.tgz` archive after full CI verification. [v0.2.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0). **Not published to the npm registry.**
 
 **Requirements:** Node.js 20+ and Git.
 
 **Fast installation from the GitHub Release (without npm registry):**
 
 ```bash
-npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.2.0/brinkhagen-agentfast-0.2.0.tgz
+npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.3.0/brinkhagen-agentfast-0.3.0.tgz
 agentfast --help
 ```
 
@@ -106,6 +106,12 @@ On a fresh checkout, ensure `origin/main` exists and you have fetched the base h
 
 The excerpt above shows the `decision` field from the complete versioned schema (`schemaVersion: 1`). The full report also includes changed paths, risk reasons, candidate tests, and analysis diagnostics.
 
+### New in v0.3.0: safe TypeScript path aliases
+
+For projects with simple `tsconfig.json` / `jsconfig.json` aliases such as `"@/*": ["src/*"]`, AgentFast can follow tests importing aliased source files. It supports exact mappings and single-wildcard mappings, including JSONC comments and trailing commas.
+
+If aliases are missing, ambiguous, inherited from `extends`, or resolve outside the repository, it refuses to claim the dependency graph is complete and recommends full testing. This is intentionally conservative. [See the v0.3.0 release notes](.github/RELEASE_NOTES_v0.3.0.md).
+
 ### New in v0.2.0: shareable Markdown risk reports
 
 Generate a report for GitHub issues, pull requests or CI reviews:
@@ -143,7 +149,7 @@ You can use `--fail-on-full` to alert CI that a complete suite must run, but do 
 
 A portable [AgentFast verification skill](skills/agentfast/SKILL.md) helps coding agents interpret change-risk reports and choose safe quick feedback without skipping required full CI. [Installation guide](docs/AGENT-SKILL.md).
 
-> This is a preview skill integration for the existing v0.2 CLI, not a published v0.3 release.
+> The skill is instruction-based and not an official OpenAI or Anthropic integration. It never bypasses required full CI.
 
 ## How it works
 
@@ -175,7 +181,7 @@ flowchart TD
 | Ordinary source with related tests | Targeted feedback | `AFFECTED_TESTS_FOUND` |
 | Only docs / images | No code tests suggested | `DOCUMENTATION_ONLY` |
 
-See [architecture](docs/ARCHITECTURE.md) for precise limits. The current implementation recognizes local JS/TS imports, re-exports, literal dynamic imports, and CommonJS `require` heuristically; it does not resolve TypeScript alias maps or every bundler and workspace import.
+See [architecture](docs/ARCHITECTURE.md) for precise limits. The current implementation recognizes local JS/TS imports, re-exports, literal dynamic imports, and CommonJS `require` heuristically; v0.3 also resolves simple root `tsconfig.json` / `jsconfig.json` path aliases. Complex `extends`, workspace, computed and bundler-specific resolution remain unsupported and trigger conservative broad testing.
 
 ## Why not just use Vitest `--changed`?
 
