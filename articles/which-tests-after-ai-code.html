@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090e22">
+<meta name="description" content="Why targeted tests after AI-generated code need a conservative risk policy. An honest technical walkthrough and reproducible AgentFast demo.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI agents changed your code. Which tests should you run?">
+<meta property="og:description" content="A practical, conservative approach to selecting fast feedback tests after AI coding changes—and knowing when not to skip the full suite.">
+<meta property="og:image" content="https://raw.githubusercontent.com/Brinkhagen/agentfast/main/docs/assets/agentfast-hero.svg">
+<meta property="og:url" content="https://brinkhagen.github.io/agentfast/articles/which-tests-after-ai-code.html">
+<link rel="canonical" href="https://brinkhagen.github.io/agentfast/articles/which-tests-after-ai-code.html">
+<link rel="icon" type="image/svg+xml" href="../assets/agentfast-mark.svg">
+<title>Which tests should run after AI-generated code? — AgentFast</title>
+<style>
+:root{color-scheme:dark;--bg:#080e1d;--panel:#101b31;--line:#29405e;--text:#edf4ff;--muted:#a9b9d4;--cyan:#22d6ea;--violet:#ad86ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 100% 0,#1d3052,transparent 44%),var(--bg);color:var(--text);font:17px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:var(--cyan)}a:hover{text-decoration-thickness:2px}a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.shell{max-width:920px;margin:auto;padding:0 26px}nav{border-bottom:1px solid var(--line)}nav .shell{display:flex;align-items:center;justify-content:space-between;min-height:80px;gap:15px}nav img{height:33px;width:33px;vertical-align:middle;margin-right:9px}nav a{color:#fff;text-decoration:none;font-weight:800}nav .navright{color:var(--muted);font-size:14px;font-weight:600}
+header{padding:70px 0 34px}.overline{text-transform:uppercase;letter-spacing:.2em;color:var(--cyan);font-size:12px;font-weight:800}h1{font-size:clamp(2.45rem,6vw,4.3rem);line-height:1.11;letter-spacing:-.055em;margin:17px 0 22px;max-width:850px}h2{font-size:1.65rem;line-height:1.25;letter-spacing:-.035em;margin:44px 0 12px}p{margin:17px 0;color:#d7e3f6}strong{color:#fff}.lede{color:var(--muted);font-size:1.18rem;max-width:760px}.meta{color:var(--muted);font-size:14px}
+figure{margin:34px 0}figure img{display:block;width:100%;border:1px solid var(--line);border-radius:16px}figcaption{color:var(--muted);font-size:13px;margin-top:10px}
+pre{overflow:auto;background:#0b1425;border:1px solid var(--line);border-radius:14px;padding:20px;color:#c9f4ff;font:14px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace}code{font-family:ui-monospace,Consolas,monospace;background:#182841;padding:2px 5px;border-radius:4px}
+pre code{background:transparent;padding:0}.pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}.callout{padding:18px 22px;background:linear-gradient(135deg,#12213a,#10182c);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:12px;margin:28px 0}.callout p{margin:5px 0}.cta{background:linear-gradient(135deg,#172f49,#231a43);border:1px solid #41668d;border-radius:20px;padding:28px;margin:48px 0}.buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}.btn{display:inline-block;text-decoration:none;font-size:15px;font-weight:750;padding:11px 16px;border:1px solid #4b719c;border-radius:10px;color:white}.primary{background:var(--cyan);border-color:var(--cyan);color:#08101e}
+ul{padding-left:24px}li{margin:9px 0;color:#d7e3f6}footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;padding:30px 0 50px;margin-top:30px}
+@media(max-width:680px){.pair{grid-template-columns:1fr}header{padding-top:40px}.shell{padding:0 20px}pre{font-size:12px}nav .navright{font-size:12px}}
+</style>
+</head>
+<body>
+<nav><div class="shell"><a href="../"><img src="../assets/agentfast-mark.svg" alt="">AgentFast</a><a class="navright" href="https://github.com/Brinkhagen/agentfast">Source on GitHub ↗</a></div></nav>
+<main class="shell">
+<header><div class="overline">Engineering notes / Testing strategy / Open source</div>
+<h1>AI agents changed your code. <span style="color:#5de1fa">Which tests should you run?</span></h1>
+<p class="lede">A faster feedback loop is useful. Blindly skipping tests is not. Here’s a reproducible, conservative approach for JavaScript and TypeScript projects.</p>
+<div class="meta">BRINKHAGEN Open Source · November 2026 · AgentFast v0.3.0 public beta</div></header>
+<article>
+<h2>The problem isn't just running fewer tests</h2>
+<p>After a coding agent edits a file, you need quick feedback. Re-running the entire test suite after every small local edit can be frustrating. But choosing one nearby test just because it looks relevant can miss changes in authentication, billing, shared configuration, database migrations or consumers that static analysis couldn't discover.</p>
+<p>The useful question is: <strong>how much confidence do we have in the dependency graph, and what is the risk of the modified code?</strong> A conservative tool should say “run everything” when it cannot answer that question confidently.</p>
+<div class="callout"><p><strong>The policy:</strong> A targeted recommendation is for fast development feedback. It never replaces required CI before merging, releasing or deploying.</p></div>
+<h2>A focused change versus a risky change</h2>
+<p><strong>Scenario A:</strong> A small math module changes. A test directly imports that module and there are no unresolved local dependencies. AgentFast may suggest the related test file for immediate feedback.</p>
+<p><strong>Scenario B:</strong> A file under an authentication-sensitive path changes. Even if a nearby test exists, AgentFast recommends the full suite because of the risk classification.</p>
+<div class="pair">
+<figure><img src="../assets/cli-targeted.svg" alt="AgentFast showing a targeted test recommendation"><figcaption>Focused change: candidate tests for local feedback.</figcaption></figure>
+<figure><img src="../assets/cli-full.svg" alt="AgentFast showing a full-suite recommendation"><figcaption>Sensitive change: conservative full-suite recommendation.</figcaption></figure>
+</div>
+<p>These images are styled representations of the included demo, <em>not</em> benchmarks or proof of faster execution.</p>
+<h2>Try both outcomes on your own machine</h2>
+<p>AgentFast is a free, MIT-licensed Node.js CLI. It requires Git and Node.js 20+. It does not call an LLM API, upload your source code or depend on a remote account.</p>
+<pre><code>git clone https://github.com/Brinkhagen/agentfast.git
+cd agentfast
+npm ci
+npm run verify
+node examples/demo.mjs</code></pre>
+<p>The demo creates a temporary disposable Git repository, simulates a focused module change and then an authentication-related change, prints the two recommendations and cleans up. You don't need to risk an existing project.</p>
+<p>To run the CLI on your own repository, install the versioned package from <a href="https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0">GitHub Releases</a> or run <code>npm link</code> from the checkout and use <code>agentfast check --base HEAD</code> in the target Git project.</p>
+<h2>What the tool actually analyzes</h2>
+<p>AgentFast reads Git changes and applies transparent path-risk rules. It traverses straightforward relative JS/TS imports to find potentially related tests, emits reason codes, and falls back to full testing for sensitive paths, structural changes and incomplete analysis. Version 0.2 adds Markdown and JSON reports for humans and CI summaries.</p>
+<pre><code>agentfast check --base HEAD --format markdown
+agentfast check --base origin/main --json
+agentfast check --format markdown --output report.md</code></pre>
+<p><code>--output</code> intentionally refuses to overwrite an existing file. The output is advice: the CLI does not execute tests.</p>
+<h2>Where it may be wrong</h2>
+<p>AgentFast is a public beta. Its static import analysis cannot resolve every TypeScript alias, workspace dependency, dynamic import or framework-specific convention. It isn't a code coverage engine, a security scanner or a replacement for test runner features.</p>
+<p>Vitest already provides native changed/related test selection. Use it if that's appropriate for your repository. AgentFast's distinct experiment is the <strong>visible, conservative risk-policy layer</strong> around test scope. No speedup percentages or production adoption claims have been measured or established.</p>
+<h2>Help challenge the assumptions</h2>
+<p>The most useful beta feedback isn't “looks cool.” It is a reproducible case where the tool recommended too few tests, where its fallback was unnecessarily broad, or where the setup was confusing.</p>
+<div class="cta"><h2 style="margin:0 0 8px">Have 10 minutes? Break the beta.</h2>
+<p>Run the disposable demo or try a sanitized local Git change. Tell us the operating system, Node version, the recommendation you expected, and what happened instead. No stars, favorable reviews or registration are required.</p>
+<div class="buttons"><a class="btn primary" href="https://github.com/Brinkhagen/agentfast/blob/main/docs/BETA-TESTING.md">10-minute test guide ↗</a><a class="btn" href="https://github.com/Brinkhagen/agentfast/issues/new?template=beta-feedback.yml">Send bug / feedback ↗</a><a class="btn" href="https://github.com/Brinkhagen/agentfast">Read the source ↗</a></div>
+</div>
+</article>
+</main>
+<footer><div class="shell">AgentFast is maintained by BRINKHAGEN and distributed under the MIT license. Independent tooling; not affiliated with OpenAI, Anthropic, GitHub or Vitest. <a href="../">Project home</a></div></footer>
+</body></html>

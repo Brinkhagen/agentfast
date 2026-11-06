@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090e22">
+<link rel="icon" type="image/svg+xml" href="./assets/agentfast-mark.svg">
+<meta name="application-name" content="AgentFast">
+<meta name="description" content="AgentFast — conservative, explainable test planning for AI-assisted development. Free, local-first, MIT licensed.">
+<meta property="og:title" content="AgentFast — Ship faster. Verify smarter.">
+<meta property="og:description" content="Git-aware test recommendations for Codex, Claude Code and developers. Zero runtime dependencies.">
+<meta property="og:image" content="https://raw.githubusercontent.com/Brinkhagen/agentfast/main/docs/assets/agentfast-hero.svg">
+<meta property="og:url" content="https://brinkhagen.github.io/agentfast/">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://brinkhagen.github.io/agentfast/">
+<link rel="alternate" type="application/rss+xml" title="AgentFast Engineering Notes" href="./feed.xml">
+<title>AgentFast — Ship faster. Verify smarter.</title>
+<style>
+:root{color-scheme:dark;--bg:#080d1c;--panel:#101b33;--line:#284265;--text:#f4f7ff;--muted:#a3b8d9;--cyan:#1bd9f8;--violet:#a34cf6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% 0%,#182f57 0,transparent 40%),var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:inherit;text-decoration:none}a:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+.wrap{max-width:1190px;margin:auto;padding:0 28px}
+header{border-bottom:1px solid #20304b}nav{min-height:86px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:850;letter-spacing:.08em}.brand img{width:37px;height:37px}
+.navlinks{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:14px}
+.hero{padding:100px 0 60px}.eyebrow{font-size:12px;letter-spacing:.24em;text-transform:uppercase;font-weight:800;color:var(--cyan)}
+h1{font-size:clamp(3.2rem,8vw,6.8rem);line-height:1.04;letter-spacing:-.07em;margin:20px 0 26px}
+.gradient{background:linear-gradient(115deg,var(--cyan),#598bfc,var(--violet));color:transparent;background-clip:text}
+.lede{font-size:clamp(1rem,2.1vw,1.35rem);max-width:780px;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:14px;margin:36px 0}
+.btn{border-radius:12px;padding:15px 22px;font-weight:750;border:1px solid #416b98}
+.primary{background:linear-gradient(120deg,var(--cyan),#71a9ff);color:#071020;border:0}
+.secondary{background:#101c32}.tiny{color:var(--muted);font-size:13px}
+.art{width:100%;margin:52px 0 10px;display:block;border:1px solid #263e67;border-radius:18px}
+section{padding:52px 0}h2{font-size:clamp(2rem,4vw,3.3rem);letter-spacing:-.05em;margin:0 0 14px}
+.sub{color:var(--muted);margin:0 0 30px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{padding:29px;background:linear-gradient(145deg,#111d36,#0d1427);border:1px solid #253956;border-radius:18px}
+.card strong{font-size:19px}.card p{color:var(--muted);font-size:15px}.symbol{color:var(--cyan);font-size:26px;margin-bottom:18px}
+.terminal{background:#091326;border:1px solid #365480;border-radius:18px;padding:26px;overflow:auto;font:16px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}
+.prompt{color:var(--cyan)}.ok{color:#34dda8}.warn{color:#f3ca68}.safe{color:#b898ff}
+footer{border-top:1px solid #253956;margin-top:70px;padding:40px 0;color:var(--muted);font-size:14px}
+@media(max-width:780px){.navlinks{gap:12px}.navlinks a:nth-child(1){display:none}.hero{padding-top:65px}.grid{grid-template-columns:1fr}.wrap{padding:0 20px}.terminal{font-size:13px;padding:18px}}
+</style>
+</head><body>
+<header><div class="wrap"><nav><a class="brand" href="https://github.com/Brinkhagen/agentfast"><img src="assets/agentfast-mark.svg" alt=""> AGENTFAST</a><div class="navlinks"><a href="#features">Features</a><a href="#workflow">Workflow</a><a href="https://github.com/Brinkhagen/agentfast">GitHub ↗</a></div></nav></div></header>
+<main><div class="wrap"><div class="hero"><div class="eyebrow">✦ BRINKHAGEN OPEN SOURCE · v0.3.0</div><h1>Ship faster.<br><span class="gradient">Verify smarter.</span></h1><p class="lede">Conservative, explainable test planning for AI-assisted code changes. Understand risk before choosing fast feedback — and know when a full suite is safer.</p><div class="actions"><a class="btn primary" href="https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0">Download v0.3.0 ↗</a><a class="btn secondary" href="https://github.com/Brinkhagen/agentfast">Source & documentation ↗</a></div><div class="tiny">Node.js 20+ · Zero runtime dependencies · No API keys · MIT licensed · Markdown reports</div><img class="art" src="assets/agentfast-hero.svg" alt="AgentFast brand concept artwork"><p class="tiny">Concept illustration; AgentFast recommends tests, it does not execute them.</p></div>
+<section id="features"><h2>Verification without guesswork.</h2><p class="sub">Local analysis, transparent decisions, no remote source upload.</p><div class="grid">
+<div class="card"><div class="symbol">⌘</div><strong>Git-aware analysis</strong><p>Changed, staged, unstaged, renamed and untracked files — from your existing repository.</p></div>
+<div class="card"><div class="symbol">◈</div><strong>Explainable risk</strong><p>Schema migrations, authentication, payments and configuration changes trigger more conservative checks.</p></div>
+<div class="card"><div class="symbol">⚡</div><strong>Faster local feedback</strong><p>Suggest directly and transitively related tests when a static dependency graph provides enough evidence.</p></div>
+</div></section>
+<section id="workflow"><h2>One command. Clear next step.</h2><p class="sub">Designed to work with Codex, Claude Code, GitHub Actions and regular development workflows.</p><div class="terminal"><div class="prompt">$ agentfast check --base main</div><br><div>AGENTFAST / VERIFY SMARTER</div><div>Changed files: 3</div><div>Related tests: 2</div><br><div class="warn">RECOMMENDATION: FULL TEST SUITE</div><div class="safe">Reason: HIGH_RISK_CHANGE</div><div class="tiny">Advisory only. Run required CI before merging or releasing.</div></div></section>
+<section id="try-beta"><div class="card" style="border-color:#43779f;background:linear-gradient(120deg,#123447,#171d3a)">
+<div class="eyebrow">Open beta · feedback wanted</div><h2>10 minutes. Real feedback.</h2><p class="sub" style="margin-bottom:18px">Run the disposable demo, inspect two risk decisions and tell us what AgentFast got wrong. No signup, API key or positive review required.</p>
+<div class="terminal" style="margin:16px 0;font-size:14px"><div class="prompt">$ git clone https://github.com/Brinkhagen/agentfast.git</div><div>$ cd agentfast &amp;&amp; npm ci</div><div>$ node examples/demo.mjs</div><div class="ok">Focused change → candidate tests</div><div class="warn">Auth change → full-suite recommendation</div></div>
+<div class="actions"><a class="btn primary" href="https://github.com/Brinkhagen/agentfast/blob/main/docs/BETA-TESTING.md">Join the 10-minute beta ↗</a><a class="btn secondary" href="https://github.com/Brinkhagen/agentfast/issues/new?template=beta-feedback.yml">Report feedback ↗</a></div></div></section>
+<section id="engineering"><h2>Engineering notes.</h2><p class="sub">How to get useful feedback from AI-generated code changes without confusing fewer tests with safer software.</p>
+<div class="card"><div class="eyebrow">Technical article · Free to read</div><strong style="display:block;margin:12px 0;font-size:23px">AI agents changed your code. Which tests should you run?</strong><p>Two reproducible scenarios, explainable risk policies, and what the current beta gets wrong.</p><p><a style="color:var(--cyan)" href="articles/which-tests-after-ai-code.html">Read the technical breakdown →</a></p></div></section>
+<section><h2>Open by design.</h2><p class="sub">Read the source, audit the logic and contribute improvements. Real contributors and independent feedback are welcome.</p><div class="actions"><a class="btn primary" href="https://github.com/Brinkhagen/agentfast">View source ↗</a><a class="btn secondary" href="https://github.com/Brinkhagen/agentfast/blob/main/CONTRIBUTING.md">Contribute ↗</a></div></section>
+</div></main><footer><div class="wrap">© 2026 BRINKHAGEN · AgentFast is MIT licensed · Not affiliated with OpenAI or Anthropic.</div></footer>
+</body></html>
