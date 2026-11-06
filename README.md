@@ -139,6 +139,12 @@ agentfast check --base origin/main --format markdown >> "$GITHUB_STEP_SUMMARY"
 
 You can use `--fail-on-full` to alert CI that a complete suite must run, but do **not** replace your existing tests with AgentFast's recommendations. The included GitHub Actions workflow independently runs the project's full test suite.
 
+## Codex and Claude Code skill (preview)
+
+A portable [AgentFast verification skill](skills/agentfast/SKILL.md) helps coding agents interpret change-risk reports and choose safe quick feedback without skipping required full CI. [Installation guide](docs/AGENT-SKILL.md).
+
+> This is a preview skill integration for the existing v0.2 CLI, not a published v0.3 release.
+
 ## How it works
 
 ```mermaid
