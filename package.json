@@ -1,6 +1,6 @@
 {
   "name": "@brinkhagen/agentfast",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Conservative, explainable test planning for AI-assisted code changes.",
   "type": "module",
   "private": false,
@@ -22,7 +22,7 @@
   },
   "scripts": {
     "test": "node --test",
-    "check": "node --check bin/agentfast.js && node --check src/cli.js && node --check src/git.js && node --check src/analyze.js && node --check src/report.js",
+    "check": "node --check bin/agentfast.js && node --check src/cli.js && node --check src/git.js && node --check src/analyze.js && node --check src/report.js && node --check src/aliases.js",
     "verify": "npm run check && npm test",
     "demo": "node bin/agentfast.js check --base HEAD",
     "pack:dry": "npm pack --dry-run"
