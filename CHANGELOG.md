@@ -2,6 +2,26 @@
 
 All notable changes to AgentFast are documented here. Keep old release notes and version tags available so beta testers can reproduce earlier behavior. Versions before 1.0.0 may change interfaces.
 
+## [Unreleased]
+
+### Planned
+- Independent validation on real external React/Astro repositories.
+- Reproducible benchmark comparisons with framework-native test selection.
+
+## [0.4.0] - 2026-11-08
+
+### Added
+- Conservative npm/yarn root-workspace import resolution for explicit local source exports.
+- File-level Astro frontmatter and inline script import traversal.
+- Reproducible React/Astro monorepo demo and 18 regression tests.
+- Detailed supported-pattern and limitation documentation.
+
+### Compatibility and safety
+- JSON schema version 1 and existing CLI flags are unchanged.
+- No runtime dependencies, remote calls, telemetry or automatic test execution.
+- Unsupported workspace globs, pnpm-only declarations, conditional exports and ambiguous targets fall back to broad verification.
+- No symbol-level or measured CI speedup claims. Required full CI remains mandatory.
+
 ## [0.3.0] - 2026-11-06
 
 ### Added
@@ -14,12 +34,6 @@ All notable changes to AgentFast are documented here. Keep old release notes and
 - JSON schema remains version 1; existing CLI flags and output formats are unchanged.
 - No new dependencies, external API usage, telemetry or automatic test execution.
 - Workspace aliases, extends/references, computed imports and advanced bundler resolution remain unsupported; use full required CI.
-
-## [Unreleased]
-
-### Planned
-- Better monorepo/workspace and test-framework interoperability.
-- Reproducible independent benchmarks measuring test-selection recall.
 
 ## [0.2.0] - 2026-11-05
 
