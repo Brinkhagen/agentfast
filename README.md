@@ -45,14 +45,14 @@ Both visuals are styled presentations of output from `node examples/demo.mjs`; t
 
 ## Quick start
 
-> **Latest release:** [AgentFast v0.4.1 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.1) includes a versioned `.tgz` archive after cross-platform CI. [v0.4.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.0). **Not published to the npm registry.**
+> **Latest release:** [AgentFast v0.5.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.5.0) includes a versioned `.tgz` archive after cross-platform CI. [v0.4.1 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.1). **Not published to the npm registry.**
 
 **Requirements:** Node.js 20+ and Git.
 
 **Fast installation from the GitHub Release (without npm registry):**
 
 ```bash
-npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.4.1/brinkhagen-agentfast-0.4.1.tgz
+npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.5.0/brinkhagen-agentfast-0.5.0.tgz
 agentfast --help
 ```
 
@@ -105,6 +105,18 @@ On a fresh checkout, ensure `origin/main` exists and you have fetched the base h
 ```
 
 The excerpt above shows the `decision` field from the complete versioned schema (`schemaVersion: 1`). The full report also includes changed paths, risk reasons, candidate tests, and analysis diagnostics.
+
+### New in v0.5.0: experimental exported-symbol preview
+
+Use the TypeScript syntax-tree parser to compare direct exported declarations against a Git base:
+
+```bash
+# In your JS/TS project, install TypeScript if needed
+npm install --save-dev typescript
+agentfast check --base HEAD --format json --symbol-impact
+```
+
+The extra JSON field shows modified, added and removed direct exports, and warns about internal helper changes, unsupported re-exports or missing TypeScript. **This does not yet trace symbol dependencies or make test selection more precise.** AgentFast's existing file-level risk decision is preserved, with required full CI unaffected. [Details and limits](docs/SYMBOL-PREVIEW.md).
 
 ### New in v0.4.1: reproducible benchmarks and real-world beta testing
 
@@ -234,6 +246,8 @@ AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welco
 - [Security policy](SECURITY.md)
 - [Project roadmap](docs/ROADMAP.md)
 - [Version history](CHANGELOG.md)
+- [v0.5.0 release notes](.github/RELEASE_NOTES_v0.5.0.md)
+- [Experimental AST symbol preview](docs/SYMBOL-PREVIEW.md)
 - [v0.4.1 release notes](.github/RELEASE_NOTES_v0.4.1.md)
 - [Benchmarks and measurement protocol](docs/BENCHMARKS.md)
 - [React/Astro beta checklist](docs/REACT-ASTRO-BETA.md)

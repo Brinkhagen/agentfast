@@ -37,6 +37,12 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 - Maintainer-controlled npm OIDC workflow prepared; initial registry publication still pending
 - React/Astro beta-testing guide and symbol-aware impact RFC
 
+## v0.5.0 — November 8, 2026
+
+- Optional TypeScript AST-based preview of directly changed exported declarations
+- Strict JSON-only `--symbol-impact` option, with no effect on conservative test selection
+- Safe diagnostics for unsupported syntax and an optional TypeScript integration test workflow
+
 ## Proposed next milestones (not shipped)
 
 1. **Validation:** Compare AgentFast recommendations with Vitest's native changed/related test selection on real-world projects; synthetic CLI timings alone are not comparative evidence. See [issue #5](https://github.com/Brinkhagen/agentfast/issues/5).
@@ -44,3 +50,5 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 3. **Stability:** Collect real external beta test evidence, review symbol-level analysis RFC, and define a carefully scoped v1.0.0 milestone.
 
 Each new public release must include the previous versions, change log, tests and checked release notes.
+
+**Still under research:** symbol-accurate dependency propagation and test selection. The v0.5 preview does not claim those capabilities. See [Issue #14](https://github.com/Brinkhagen/agentfast/issues/14).

@@ -8,6 +8,21 @@ All notable changes to AgentFast are documented here. Keep old release notes and
 - Independent validation on real external React/Astro repositories.
 - Reproducible benchmark comparisons with framework-native test selection.
 
+## [0.5.0] - 2026-11-08
+
+### Added
+- Explicit experimental `--symbol-impact` CLI flag for JSON reports only.
+- Optional local TypeScript AST parsing of direct exported JS/TS declarations and Git-base comparisons.
+- Report modified, added and removed export declarations, non-export statement changes and parsing uncertainty.
+- Dedicated optional-parser integration tests and a Node.js 20/22 GitHub Actions workflow.
+- Clear symbol preview documentation and conservative fallback when TypeScript is missing.
+
+### Compatibility and safety
+- **No** symbol-aware narrowing of `affectedTests`, which remains based on the established file-level graph.
+- Unsupported re-exports, syntax errors and structural changes are reported as inconclusive/partial.
+- No mandatory TypeScript runtime dependency, API keys, telemetry or external code upload.
+- Prior JSON fields and full required CI safety rules remain unchanged.
+
 ## [0.4.1] - 2026-11-08
 
 ### Added
