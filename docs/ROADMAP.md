@@ -30,10 +30,17 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 - Conservative npm/yarn workspace package imports with explicit local source entry points
 - Reproducible React/Astro workspace demo and new safety regression tests
 
+## v0.4.1 — November 8, 2026
+
+- Reproducible synthetic CLI benchmark scenarios and raw metrics workflow
+- Extra alias regression tests for nested paths and import cycles
+- Maintainer-controlled npm OIDC workflow prepared; initial registry publication still pending
+- React/Astro beta-testing guide and symbol-aware impact RFC
+
 ## Proposed next milestones (not shipped)
 
-1. **Validation:** Publish independently reproducible fixtures and compare recommendations with Vitest's native changed/related test selection. See [issue #5](https://github.com/Brinkhagen/agentfast/issues/5).
-2. **Distribution:** Evaluate publishing the package to the public npm registry; currently releases distribute a versioned `.tgz`.
-3. **Stability:** External beta testing, API review, safety hardening and a carefully scoped v1.0.0 milestone.
+1. **Validation:** Compare AgentFast recommendations with Vitest's native changed/related test selection on real-world projects; synthetic CLI timings alone are not comparative evidence. See [issue #5](https://github.com/Brinkhagen/agentfast/issues/5).
+2. **Distribution:** Authenticate and publish the first npm package release, then configure the manual trusted-publisher workflow.
+3. **Stability:** Collect real external beta test evidence, review symbol-level analysis RFC, and define a carefully scoped v1.0.0 milestone.
 
 Each new public release must include the previous versions, change log, tests and checked release notes.

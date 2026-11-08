@@ -82,3 +82,25 @@ test('alias resolver recognizes normal external modules separately', t => {
   const root = fixture(t);
   assert.equal(loadAliases(root).resolve('react', new Set()).kind, 'external');
 });
+
+test('nested path aliases link multiple levels without skipping tests', t => {
+  const root = fixture(t, {
+    'tsconfig.json': config({ '@/*': ['src/*'] }),
+    'src/deep/feature/math.ts': 'export const amount = 1;',
+    'src/index.ts': "export { amount } from '@/deep/feature/math';",
+    'tests/math.test.ts': "import { amount } from '@/deep/feature/math';"
+  });
+  assert.equal(plan(root, 'src/deep/feature/math.ts').decision.mode, 'targeted');
+  assert.deepEqual(plan(root, 'src/deep/feature/math.ts').affectedTests, ['tests/math.test.ts']);
+});
+test('cyclic aliased imports terminate and keep affected test suggestions conservative', t => {
+  const root = fixture(t, {
+    'tsconfig.json': config({ '@/*': ['src/*'] }),
+    'src/math.ts': "import { next } from '@/other'; export const add = next;",
+    'src/other.ts': "import { add } from '@/math'; export const next = add;",
+    'tests/math.test.ts': "import { add } from '@/math';"
+  });
+  const result = plan(root);
+  assert.equal(result.decision.mode, 'targeted');
+  assert.deepEqual(result.affectedTests, ['tests/math.test.ts']);
+});

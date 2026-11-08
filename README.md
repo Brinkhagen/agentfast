@@ -17,7 +17,7 @@
 <p align="center"><img src="docs/assets/agentfast-hero.svg" alt="AgentFast visual concept art with Git diff and test planning terminal" width="100%"></p>
 <p align="center"><sub>Conceptual brand illustration. The current CLI analyzes and recommends tests; it does not execute them automatically.</sub></p>
 
-> **🧪 Beta testers wanted!** If you use coding agents or work with Node.js/TypeScript, please try the [10–15 minute beta test](docs/BETA-TESTING.md) and tell us what breaks. [Submit feedback](https://github.com/Brinkhagen/agentfast/issues/new?template=beta-feedback.yml). No API key, signup, or positive review required.
+> **🧪 Beta testers wanted!** If you use coding agents or work with Node.js/TypeScript, please try the [React/Astro beta verification](docs/REACT-ASTRO-BETA.md) and tell us what breaks. [Submit feedback](https://github.com/Brinkhagen/agentfast/issues/new?template=beta-feedback.yml). No API key, signup, or positive review required.
 
 ## Why AgentFast?
 
@@ -45,14 +45,14 @@ Both visuals are styled presentations of output from `node examples/demo.mjs`; t
 
 ## Quick start
 
-> **Latest release:** [AgentFast v0.4.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.0) includes a versioned `.tgz` archive after cross-platform CI. [v0.3.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0). **Not published to the npm registry.**
+> **Latest release:** [AgentFast v0.4.1 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.1) includes a versioned `.tgz` archive after cross-platform CI. [v0.4.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.0). **Not published to the npm registry.**
 
 **Requirements:** Node.js 20+ and Git.
 
 **Fast installation from the GitHub Release (without npm registry):**
 
 ```bash
-npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.4.0/brinkhagen-agentfast-0.4.0.tgz
+npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.4.1/brinkhagen-agentfast-0.4.1.tgz
 agentfast --help
 ```
 
@@ -105,6 +105,19 @@ On a fresh checkout, ensure `origin/main` exists and you have fetched the base h
 ```
 
 The excerpt above shows the `decision` field from the complete versioned schema (`schemaVersion: 1`). The full report also includes changed paths, risk reasons, candidate tests, and analysis diagnostics.
+
+### New in v0.4.1: reproducible benchmarks and real-world beta testing
+
+Run seven offline fixture scenarios with real CLI executions and inspect raw latency data:
+
+```bash
+npm run bench:repro
+npm run bench:repro -- --output benchmark.json
+```
+
+[Read the benchmark limitations](docs/BENCHMARKS.md) · [React/Astro beta checklist](docs/REACT-ASTRO-BETA.md) · [Safe npm publishing guide](docs/NPM-PUBLISHING.md).
+
+These tiny synthetic measurements are **not proof of a Vitest speedup**. npm registry publication remains pending until a verified scope owner completes its first publish. The tool is **file-level**, not symbol-level; a [research RFC](docs/SYMBOL-IMPACT-RFC.md) defines the requirements for any future symbol-aware analysis.
 
 ### New in v0.4.0: React/Astro workspace-aware test guidance
 
@@ -221,6 +234,11 @@ AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welco
 - [Security policy](SECURITY.md)
 - [Project roadmap](docs/ROADMAP.md)
 - [Version history](CHANGELOG.md)
+- [v0.4.1 release notes](.github/RELEASE_NOTES_v0.4.1.md)
+- [Benchmarks and measurement protocol](docs/BENCHMARKS.md)
+- [React/Astro beta checklist](docs/REACT-ASTRO-BETA.md)
+- [npm trusted publishing](docs/NPM-PUBLISHING.md)
+- [Symbol-aware analysis RFC](docs/SYMBOL-IMPACT-RFC.md)
 - [v0.4.0 release notes](.github/RELEASE_NOTES_v0.4.0.md)
 - [React/Astro workspace guide](docs/V04-WORKSPACES-ASTRO.md)
 - [v0.3.0 release notes](.github/RELEASE_NOTES_v0.3.0.md)

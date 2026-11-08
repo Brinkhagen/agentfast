@@ -1,0 +1,40 @@
+name: Reproducible CLI benchmark
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'benchmarks/**'
+      - 'src/**'
+      - 'package.json'
+      - '.github/workflows/benchmarks.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    name: Synthetic fixtures / Node 22
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Verify benchmark source and fixture decisions
+        run: npm run check
+      - name: Measure real CLI executions on temporary Git repositories
+        env:
+          AGENTFAST_BENCH_ITERATIONS: '7'
+        shell: bash
+        run: node benchmarks/cli-microbenchmark.mjs --output "$RUNNER_TEMP/agentfast-benchmark.json"
+      - name: Upload raw metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentfast-synthetic-cli-benchmark
+          path: ${{ runner.temp }}/agentfast-benchmark.json
+          if-no-files-found: error
+          retention-days: 30

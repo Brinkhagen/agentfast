@@ -1,6 +1,6 @@
 {
   "name": "@brinkhagen/agentfast",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Conservative, explainable test planning for AI-assisted code changes.",
   "type": "module",
   "private": false,
@@ -22,11 +22,12 @@
   },
   "scripts": {
     "test": "node --test",
-    "check": "node --check bin/agentfast.js && node --check src/cli.js && node --check src/git.js && node --check src/analyze.js && node --check src/report.js && node --check src/aliases.js && node --check src/workspaces.js && node --check src/astro.js && node --check examples/demo-workspaces.mjs",
+    "check": "node --check bin/agentfast.js && node --check src/cli.js && node --check src/git.js && node --check src/analyze.js && node --check src/report.js && node --check src/aliases.js && node --check src/workspaces.js && node --check src/astro.js && node --check examples/demo-workspaces.mjs && node --check benchmarks/cli-microbenchmark.mjs",
     "verify": "npm run check && npm test && npm run demo:workspaces",
     "demo": "node bin/agentfast.js check --base HEAD",
     "pack:dry": "npm pack --dry-run",
-    "demo:workspaces": "node examples/demo-workspaces.mjs"
+    "demo:workspaces": "node examples/demo-workspaces.mjs",
+    "bench:repro": "node benchmarks/cli-microbenchmark.mjs"
   },
   "files": [
     "bin",

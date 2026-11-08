@@ -1,0 +1,59 @@
+name: Publish npm (manual, trusted publisher)
+
+# Deliberately never publishes automatically from a PR or a normal push.
+# Must first create the npm package and configure its trusted publisher on npmjs.com.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Existing verified GitHub release version, for example 0.5.0'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Verify tagged package, then publish via npm OIDC
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Validate version input
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "Only stable semver versions are accepted." >&2
+            exit 1
+          }
+      - uses: actions/checkout@v4
+        with:
+          ref: v${{ inputs.version }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install supported npm CLI
+        run: npm install --global npm@latest
+      - name: Verify immutable tagged release and package metadata
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(node -p 'require("./package.json").version')" = "$VERSION"
+          test "$(node -p 'require("./package-lock.json").version')" = "$VERSION"
+          test "$(node -p 'require("./package.json").name')" = '@brinkhagen/agentfast'
+          test "$(git rev-parse HEAD)" = "$(git rev-parse "refs/tags/v$VERSION^{commit}")"
+      - name: Install and run all checks
+        run: |
+          npm ci
+          npm run verify
+          npm pack --dry-run
+      - name: Publish to npm with provenance (requires npm trusted publisher)
+        run: npm publish --access public --provenance
