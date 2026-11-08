@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Controlled, reproducible comparison of AgentFast's advisory decision and
- * Vitest's native Git-based test selection on the SAME temporary TS fixture.
+ * Vitest's native Git-based and related-file test selection on the SAME temporary TS fixture.
  * Requires npm registry access for a one-time pinned Vitest installation.
  * Does not compare speed; Vitest executes tests, AgentFast does not.
  */
@@ -98,7 +98,18 @@ try {
       const v = call(process.execPath, [join(root, 'node_modules/vitest/vitest.mjs'), 'run', '--changed', 'HEAD', '--reporter=json', '--outputFile', report], { timeout: 90000 });
       const selected = filesFromVitest(JSON.parse(readFileSync(report, 'utf8')));
       if (c.expectedVitestTests) assert.deepEqual(selected, c.expectedVitestTests, c.id + ': Vitest selection changed, review the fixture');
-      results.push({ scenario: c.id, agentfast: { mode: advisory.decision.mode, reason: advisory.decision.reason, affectedTests: advisory.affectedTests, advisoryCliMs: a.elapsedMs }, vitest: { selectedAndExecutedTestFiles: selected, executionWallMs: v.elapsedMs, version }, interpretation: 'Different tasks: AgentFast suggests verification policy; Vitest selects and runs tests.' });
+      let related = null;
+      if (c.id === 'ordinary-typescript') {
+        const relatedReport = join(dirname(root), 'agentfast-vitest-' + process.pid + '-related.json');
+        try {
+          call(process.execPath, [join(root, 'node_modules/vitest/vitest.mjs'), 'related', 'src/math.ts', '--run', '--reporter=json', '--outputFile', relatedReport], { timeout: 90000 });
+          related = filesFromVitest(JSON.parse(readFileSync(relatedReport, 'utf8')));
+          assert.deepEqual(related, ['tests/math.test.ts'], 'Vitest related selection changed; review the fixture');
+        } finally {
+          rmSync(relatedReport, { force: true });
+        }
+      }
+      results.push({ scenario: c.id, agentfast: { mode: advisory.decision.mode, reason: advisory.decision.reason, affectedTests: advisory.affectedTests, advisoryCliMs: a.elapsedMs }, vitest: { selectedAndExecutedTestFiles: selected, relatedSelectedAndExecutedTestFiles: related, executionWallMs: v.elapsedMs, version }, interpretation: 'Different tasks: AgentFast suggests verification policy; Vitest selects and runs tests.' });
     } finally {
       rmSync(report, { force: true });
     }
