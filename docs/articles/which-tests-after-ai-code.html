@@ -32,7 +32,7 @@ ul{padding-left:24px}li{margin:9px 0;color:#d7e3f6}footer{border-top:1px solid v
 <header><div class="overline">Engineering notes / Testing strategy / Open source</div>
 <h1>AI agents changed your code. <span style="color:#5de1fa">Which tests should you run?</span></h1>
 <p class="lede">A faster feedback loop is useful. Blindly skipping tests is not. Here’s a reproducible, conservative approach for JavaScript and TypeScript projects.</p>
-<div class="meta">BRINKHAGEN Open Source · November 2026 · AgentFast v0.4.0 public beta</div></header>
+<div class="meta">BRINKHAGEN Open Source · November 2026 · AgentFast v0.4.1 public beta</div></header>
 <article>
 <h2>The problem isn't just running fewer tests</h2>
 <p>After a coding agent edits a file, you need quick feedback. Re-running the entire test suite after every small local edit can be frustrating. But choosing one nearby test just because it looks relevant can miss changes in authentication, billing, shared configuration, database migrations or consumers that static analysis couldn't discover.</p>
@@ -55,7 +55,7 @@ npm run verify
 node examples/demo.mjs</code></pre>
 <p>The demo creates a temporary disposable Git repository, simulates a focused module change and then an authentication-related change, prints the two recommendations and cleans up. You don't need to risk an existing project.</p>
 <p>AgentFast v0.4 adds conservative npm/yarn workspace package imports and static Astro component imports. Analysis remains file-level, not symbol-level; it does not guarantee a measurable CI speedup. See <a href="https://github.com/Brinkhagen/agentfast/blob/main/docs/V04-WORKSPACES-ASTRO.md">supported patterns and limitations</a>.</p>
-<p>To run the CLI on your own repository, install the versioned package from <a href="https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.0">GitHub Releases</a> or run <code>npm link</code> from the checkout and use <code>agentfast check --base HEAD</code> in the target Git project.</p>
+<p>To run the CLI on your own repository, install the versioned package from <a href="https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.1">GitHub Releases</a> or run <code>npm link</code> from the checkout and use <code>agentfast check --base HEAD</code> in the target Git project.</p>
 <h2>What the tool actually analyzes</h2>
 <p>AgentFast reads Git changes and applies transparent path-risk rules. It traverses straightforward relative JS/TS imports to find potentially related tests, emits reason codes, and falls back to full testing for sensitive paths, structural changes and incomplete analysis. Version 0.2 adds Markdown and JSON reports for humans and CI summaries.</p>
 <pre><code>agentfast check --base HEAD --format markdown
