@@ -6,7 +6,8 @@ AgentFast uses versioned GitHub Releases and **preserves all old releases and ta
 - [v0.1.0 source and package](https://github.com/Brinkhagen/agentfast/releases/tag/v0.1.0)
 - [v0.2.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0)
 - [v0.3.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0)
-- [v0.4.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.0) (after CI-verified publication)
+- [v0.4.0 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.0)
+- [v0.4.1 release](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.1) (after CI-verified publication)
 - [Cross-platform CI](https://github.com/Brinkhagen/agentfast/actions/workflows/ci.yml)
 - [Release automation](https://github.com/Brinkhagen/agentfast/actions/workflows/release.yml)
 - [Website publishing](https://github.com/Brinkhagen/agentfast/actions/workflows/publish-site.yml)
@@ -20,7 +21,7 @@ AgentFast uses versioned GitHub Releases and **preserves all old releases and ta
 5. It creates a new `vX.Y.Z` GitHub Release only if that version does not exist. Published versions are **never silently replaced**.
 6. Failed CI prevents automated publication; fix the problems and rerun verification on a new commit.
 
-This workflow does **not** publish to the public npm registry. Distribution is through a downloadable GitHub Release archive until npm publication is separately configured.
+The automated GitHub Release workflow does **not** publish to npm. A separate [manual npm workflow](../.github/workflows/publish-npm.yml) is prepared, but publishing requires a verified npm scope owner and trusted-publisher configuration. See [npm publishing instructions](NPM-PUBLISHING.md).
 
 ## Safety and limitations
 
