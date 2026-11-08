@@ -1,10 +1,12 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, posix, sep } from 'node:path';
 import { loadAliases } from './aliases.js';
+import { loadWorkspaces } from './workspaces.js';
+import { extractAstroScripts } from './astro.js';
 
 const IGNORE_DIRS = new Set(['.git','node_modules','.next','.nuxt','.turbo','.cache','dist','build','coverage','.output','vendor','.venv','tmp','temp','out']);
-const SOURCE_EXTS = new Set(['.js','.jsx','.ts','.tsx','.mjs','.cjs','.mts','.cts','.json']);
-const SCRIPT_EXTS = new Set(['.js','.jsx','.ts','.tsx','.mjs','.cjs','.mts','.cts']);
+const SOURCE_EXTS = new Set(['.js','.jsx','.ts','.tsx','.mjs','.cjs','.mts','.cts','.json','.astro']);
+const SCRIPT_EXTS = new Set(['.js','.jsx','.ts','.tsx','.mjs','.cjs','.mts','.cts','.astro']);
 const TEST_PATTERN = /(?:^|\/)(?:__tests__\/.*|tests?\/.*|.*\.(?:test|spec))\.(?:[cm]?[jt]sx?)$/i;
 const DOC_PATTERN = /(?:^|\/)(?:docs?\/|\.github\/ISSUE_TEMPLATE\/)|\.(?:md|mdx|txt|rst|adoc|svg|png|jpe?g|gif|webp)$/i;
 const CONFIG_PATTERN = /(?:^|\/)(?:package(?:-lock)?\.json|pnpm-lock\.yaml|yarn\.lock|bun\.lockb?|bun\.lock|(?:vitest|jest|playwright|vite|next|webpack|tsup|babel|eslint|prettier)\.config\.[^/]+|tsconfig[^/]*\.json|\.env(?:\..*)?|Dockerfile|docker-compose[^/]*|\.github\/workflows\/.*)$/i;
@@ -57,7 +59,8 @@ function resolveLocalImport(importer,spec,lookup){
 
 export function dependencyGraph(root,files){
   const aliasResolver = loadAliases(root);
-  const lookup=new Set(files),dependents=new Map(),ambiguous=[...aliasResolver.diagnostics],tests=files.filter(isTest);
+  const workspaceResolver = loadWorkspaces(root, files);
+  const lookup=new Set(files),dependents=new Map(),ambiguous=[...aliasResolver.diagnostics,...workspaceResolver.diagnostics],tests=files.filter(isTest);
   for(const file of files){
     if(!isScript(file))continue;
     let content;
@@ -66,6 +69,11 @@ export function dependencyGraph(root,files){
       if(statSync(full).size>MAX_SOURCE_BYTES){ambiguous.push({path:file,reason:'file too large to analyze'});continue;}
       content=readFileSync(full,'utf8');
     }catch{ambiguous.push({path:file,reason:'unreadable source file'});continue;}
+    if (file.endsWith('.astro')) {
+      const extracted = extractAstroScripts(content);
+      for (const reason of extracted.diagnostics) ambiguous.push({path:file,reason});
+      content = extracted.source;
+    }
     for(const spec of importSpecifiers(content)){
       if(spec.startsWith('.')){
         const target=resolveLocalImport(file,spec,lookup);
@@ -74,7 +82,8 @@ export function dependencyGraph(root,files){
           dependents.get(target).add(file);
         }else ambiguous.push({path:file,reason:`unresolved local import: ${spec}`});
       }else{
-        const result = aliasResolver.resolve(spec, lookup);
+        const workspace = workspaceResolver.resolve(spec);
+        const result = workspace.kind === 'external' ? aliasResolver.resolve(spec, lookup) : workspace;
         if (result.kind === 'resolved') {
           if (!dependents.has(result.path)) dependents.set(result.path, new Set());
           dependents.get(result.path).add(file);
@@ -83,7 +92,7 @@ export function dependencyGraph(root,files){
         }
       }
     }
-    if(/\b(?:import|require)\s*\(\s*(?!['"])/.test(content)){
+    if(/\b(?:import|require)\s*\(\s*(?!['"])/.test(content) || /\bimport\.meta\.glob\s*\(/.test(content)){
       ambiguous.push({path:file,reason:'computed dynamic import or require'});
     }
   }
