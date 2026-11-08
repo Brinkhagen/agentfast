@@ -1,6 +1,6 @@
 # AgentFast agent skill (preview)
 
-A portable, instruction-based skill for Codex and Claude Code to use the existing AgentFast v0.2 CLI for conservative verification planning. This is **not** an official OpenAI or Anthropic extension, and is **not** a new package release.
+A portable, instruction-based skill for Codex and Claude Code to use the existing AgentFast CLI (v0.4 supported) for conservative verification planning. This is **not** an official OpenAI or Anthropic extension, and is **not** a new package release.
 
 ## Install into a target project
 
