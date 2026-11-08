@@ -8,6 +8,21 @@ All notable changes to AgentFast are documented here. Keep old release notes and
 - Independent validation on real external React/Astro repositories.
 - Reproducible benchmark comparisons with framework-native test selection.
 
+## [0.4.1] - 2026-11-08
+
+### Added
+- Seven reproducible offline Git fixture scenarios covering test-impact decisions and raw CLI latency (median, p95 and environment data).
+- GitHub Actions benchmark workflow with archived unmodified JSON results.
+- Nested and cyclic TypeScript alias tests.
+- Dedicated npm trusted-publisher workflow (manual-only) and first-publish instructions.
+- Privacy-aware React/Astro beta test guide and symbol-aware analysis research specification.
+
+### Notes
+- No verified speedup vs Vitest has been established; Issue #5 remains open.
+- No external beta results have been confirmed.
+- npm registry publishing requires separate ownership, authentication and trusted-publisher setup.
+- CLI decisions remain file-level heuristics, with full protected CI required.
+
 ## [0.4.0] - 2026-11-08
 
 ### Added
