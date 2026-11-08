@@ -31,7 +31,30 @@ The GitHub Actions workflow **Reproducible CLI benchmark** runs on applicable pu
 
 **Definitions:** Measured latency includes starting Node, invoking Git, scanning fixture files and emitting JSON. It excludes running any tests. Tiny synthetic fixtures do not reflect the scale of a production monorepo or real CI jobs. Results vary across hosts and caches. There is no independent performance comparison in these numbers.
 
-## Independent comparison with Vitest (research in Issue #5)
+## Independent native Vitest selection comparison (controlled fixture)
+
+The repo also contains `benchmarks/vitest-selection.mjs`, exercised by the **Compare AgentFast and Vitest selections** workflow. It installs **Vitest 5.1.0** into a temporary, isolated TypeScript Git fixture, runs the real AgentFast CLI and Vitest `--changed HEAD` against the exact same edits, and saves full JSON results as a GitHub Actions artifact. For the ordinary TypeScript case it also checks `vitest related src/math.ts`.
+
+Reproduce in a trusted checkout with Node.js 22+, Git and npm registry access:
+
+```bash
+node benchmarks/vitest-selection.mjs --output vitest-selection-local.json
+```
+
+Results verified in the GitHub Actions comparison workflow on November 8, 2026:
+
+| Scenario | AgentFast policy | Vitest 5.1.0 `--changed HEAD` executed |
+| --- | --- | --- |
+| Simple TypeScript source change | Targeted | `tests/math.test.ts` |
+| Authentication/session edit | Full verification | `tests/session.test.ts` |
+| Source edit plus unresolved import | Full verification | `tests/math.test.ts` |
+| `package.json` configuration edit | Full verification | Both fixture test files |
+
+The normal source case also selects `tests/math.test.ts` with `vitest related`. These observations illustrate **policy differences**, not superior recall or runtime. AgentFast's "full" decision is a *safety recommendation*; Vitest runs real tests. No comparison on proprietary or production-scale repositories has yet been conducted.
+
+## Follow-up research and limitations
+
+
 
 Vitest already supports [`--changed`](https://vitest.dev/config/changed) and [`vitest related`](https://vitest.dev/guide/cli). To fairly compare them on the **same real application**:
 
@@ -45,4 +68,4 @@ Vitest already supports [`--changed`](https://vitest.dev/config/changed) and [`v
 
 **Do not** treat AgentFast's conservative `full` recommendation as a test-run failure, or compare its advisory CLI runtime to a Vitest run executing tests. These are different workloads.
 
-Until those independent Vitest runs have been made and audited, [Issue #5](https://github.com/Brinkhagen/agentfast/issues/5) remains open. No unsupported speedup percentages or "seconds" guarantees are claimed.
+The controlled comparison is now automated and reproducible; independent production-scale validation and false-negative reviews remain important future work. No unsupported speedup percentages or "seconds" guarantees are claimed.
