@@ -1,0 +1,39 @@
+name: Compare AgentFast and Vitest selections
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'benchmarks/vitest-selection.mjs'
+      - '.github/workflows/vitest-comparison.yml'
+      - 'src/**'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    name: Native Vitest changed vs AgentFast advisory
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify AgentFast first
+        run: |
+          npm ci
+          npm run verify
+      - name: Compare in isolated TS fixture
+        shell: bash
+        run: node benchmarks/vitest-selection.mjs --output "$RUNNER_TEMP/vitest-comparison.json"
+      - name: Upload raw machine-readable comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentfast-vitest-controlled-comparison
+          path: ${{ runner.temp }}/vitest-comparison.json
+          if-no-files-found: error
+          retention-days: 30
