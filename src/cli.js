@@ -3,6 +3,7 @@ import { join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { git, listChanges, repositoryRoot, GitError } from './git.js';
 import { selectPlan, discover } from './analyze.js';
+import { analyzeSymbolChanges } from './symbols.js';
 import { formatReport, formatMarkdownReport } from './report.js';
 const require = createRequire(import.meta.url);
 const { version } = require('../package.json');
@@ -10,7 +11,7 @@ const { version } = require('../package.json');
 export const HELP = `AgentFast ${version} — conservative test planning for AI-assisted changes
 
 Usage:
-  agentfast check [--base <git-ref>] [--root <path>] [--format text|json|markdown] [--output <file>] [--fail-on-full]
+  agentfast check [--base <git-ref>] [--root <path>] [--format text|json|markdown] [--output <file>] [--fail-on-full] [--symbol-impact]
   agentfast doctor [--root <path>] [--json]
   agentfast init [--root <path>]
   agentfast --help | --version
@@ -22,14 +23,17 @@ Examples:
   agentfast check --format markdown
   agentfast check --format markdown --output risk-report.md
   agentfast check --fail-on-full
+  agentfast check --format json --symbol-impact
   agentfast doctor
 
+Symbol preview: --symbol-impact requires JSON output and a locally installed TypeScript compiler.
+It reports direct exported declaration changes only; never narrows test selection.
 Security: AgentFast never sends source code to a remote API or executes tests.
 The analysis is conservative and is not a replacement for required CI checks.
 `;
 
 function parseArgs(argv) {
-  const opts = { command: 'check', base: 'HEAD', root: process.cwd(), json: false, format: 'text', output: null, failOnFull: false };
+  const opts = { command: 'check', base: 'HEAD', root: process.cwd(), json: false, format: 'text', output: null, failOnFull: false, symbolImpact: false };
   let i = 0;
   if (argv.length && !argv[0].startsWith('-')) opts.command = argv[i++];
   for (; i < argv.length; i++) {
@@ -38,6 +42,7 @@ function parseArgs(argv) {
     else if (arg === '--version' || arg === '-v') opts.command = 'version';
     else if (arg === '--json') opts.json = true;
     else if (arg === '--fail-on-full') opts.failOnFull = true;
+    else if (arg === '--symbol-impact') opts.symbolImpact = true;
     else if (arg === '--format' || arg === '--output' || arg === '--base' || arg === '--root') {
       const value = argv[++i];
       if (!value || value.startsWith('-')) throw new Error(`Expected a value after ${arg}`);
@@ -49,6 +54,7 @@ function parseArgs(argv) {
     } else throw new Error(`Unknown option: ${arg}`);
   }
   if (opts.json && opts.format === 'markdown') throw new Error('Choose either --json or --format markdown, not both.');
+  if (opts.symbolImpact && (opts.command !== 'check' || !(opts.json || opts.format === 'json'))) throw new Error('--symbol-impact requires the check command with --format json or --json.');
   if (opts.command !== 'check' && opts.output) throw new Error('--output is only supported with the check command.');
   if (opts.command !== 'check' && opts.format === 'markdown') throw new Error('--format markdown is only supported with check.');
   return opts;
@@ -100,6 +106,7 @@ export function main(argv = process.argv.slice(2)) {
     const root = repositoryRoot(resolve(opts.root));
     const changes = listChanges(root, opts.base);
     const plan = selectPlan(root, opts.base, changes);
+    if (opts.symbolImpact) plan.symbolImpact = analyzeSymbolChanges(root, opts.base, changes);
     const outputFormat = opts.json ? 'json' : opts.format;
     const output = outputFormat === 'json' ? JSON.stringify(plan, null, 2) + '\n' :
       outputFormat === 'markdown' ? formatMarkdownReport(plan) : formatReport(plan, { color: opts.output ? false : undefined });
