@@ -45,14 +45,14 @@ Both visuals are styled presentations of output from `node examples/demo.mjs`; t
 
 ## Quick start
 
-> **Versioned beta:** [AgentFast v0.3.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0) includes an installable `.tgz` archive after full CI verification. [v0.2.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.2.0). **Not published to the npm registry.**
+> **Latest release:** [AgentFast v0.4.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.4.0) includes a versioned `.tgz` archive after cross-platform CI. [v0.3.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.3.0). **Not published to the npm registry.**
 
 **Requirements:** Node.js 20+ and Git.
 
 **Fast installation from the GitHub Release (without npm registry):**
 
 ```bash
-npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.3.0/brinkhagen-agentfast-0.3.0.tgz
+npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.4.0/brinkhagen-agentfast-0.4.0.tgz
 agentfast --help
 ```
 
@@ -105,6 +105,17 @@ On a fresh checkout, ensure `origin/main` exists and you have fetched the base h
 ```
 
 The excerpt above shows the `decision` field from the complete versioned schema (`schemaVersion: 1`). The full report also includes changed paths, risk reasons, candidate tests, and analysis diagnostics.
+
+### New in v0.4.0: React/Astro workspace-aware test guidance
+
+AgentFast now follows **explicit local workspace package imports** in simple npm/yarn workspaces and **static Astro imports** in component frontmatter and inline scripts. It can trace file-level change impact across an example React/Astro monorepo while retaining its conservative fallback for unsupported configuration and unknown dependencies.
+
+```bash
+npm ci
+npm run demo:workspaces  # Reproducible offline fixture: targeted feedback + full-suite fallback
+```
+
+**Scope:** simple root workspace globs (e.g. `packages/*`), exact local source exports, and supported Astro import regions. pnpm-only workspaces, conditional exports, advanced globs, package-local aliases and compiler-specific behavior are not assumed safe. **Not symbol-level analysis; no unverified speed claims.** [Supported patterns and demo](docs/V04-WORKSPACES-ASTRO.md).
 
 ### New in v0.3.0: safe TypeScript path aliases
 
@@ -181,7 +192,7 @@ flowchart TD
 | Ordinary source with related tests | Targeted feedback | `AFFECTED_TESTS_FOUND` |
 | Only docs / images | No code tests suggested | `DOCUMENTATION_ONLY` |
 
-See [architecture](docs/ARCHITECTURE.md) for precise limits. The current implementation recognizes local JS/TS imports, re-exports, literal dynamic imports, and CommonJS `require` heuristically; v0.3 also resolves simple root `tsconfig.json` / `jsconfig.json` path aliases. Complex `extends`, workspace, computed and bundler-specific resolution remain unsupported and trigger conservative broad testing.
+See [architecture](docs/ARCHITECTURE.md) for precise limits. The current implementation recognizes local JS/TS imports, re-exports, literal dynamic imports, and CommonJS `require` heuristically; v0.3 also resolves simple root `tsconfig.json` / `jsconfig.json` path aliases. Advanced `extends`, pnpm-only workspaces, conditional package exports, computed imports and bundler-specific resolution remain unsupported and trigger conservative broad testing.
 
 ## Why not just use Vitest `--changed`?
 
@@ -210,6 +221,9 @@ AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welco
 - [Security policy](SECURITY.md)
 - [Project roadmap](docs/ROADMAP.md)
 - [Version history](CHANGELOG.md)
+- [v0.4.0 release notes](.github/RELEASE_NOTES_v0.4.0.md)
+- [React/Astro workspace guide](docs/V04-WORKSPACES-ASTRO.md)
+- [v0.3.0 release notes](.github/RELEASE_NOTES_v0.3.0.md)
 - [v0.2.0 release notes](.github/RELEASE_NOTES_v0.2.0.md)
 - [Architecture and limitations](docs/ARCHITECTURE.md)
 - [Release checklist](docs/RELEASE.md)

@@ -7,5 +7,5 @@ authors:
     given-names: "Open Source"
 repository-code: "https://github.com/Brinkhagen/agentfast"
 license: MIT
-version: "0.1.0"
-date-released: "2026-11-04"
+version: "0.4.0"
+date-released: "2026-11-08"

@@ -2,7 +2,7 @@
 
 AgentFast is **an advisory**, not an automatic test runner or official extension of Codex, Claude Code, GitHub, Vitest or Jest. It reads local Git changes and suggests quick feedback tests only for sufficiently understood changes.
 
-## Commands (v0.2.0)
+## Commands (v0.4.0)
 
 Run from a Git repository after installing AgentFast:
 
@@ -36,7 +36,7 @@ For pull requests from forks, consider whether your checkout, base ref and requi
 | `targeted` | Run suggested test files for **local feedback** and all required CI before merging. |
 | `none` | No code tests advised for an empty or docs-only diff; keep required CI. |
 
-The import graph is heuristic. Path aliases, monorepos, dynamic imports and unfamiliar file types can require broader testing, and the tool does not guarantee test completeness.
+The import graph is heuristic. Advanced path aliases, pnpm-only workspaces, conditional exports, dynamic imports and unfamiliar file types can require broader testing, and the tool does not guarantee test completeness.
 
 ## Codex / Claude Code workflow
 
