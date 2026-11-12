@@ -2,6 +2,7 @@ import { lstatSync, readFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
 
 const MAX_MANIFEST_BYTES = 256 * 1024;
+const MAX_WORKSPACE_BYTES = 128 * 1024;
 const RESOLVABLE_EXTENSIONS = ['', '.ts', '.tsx', '.js', '.jsx', '.mts', '.cts', '.mjs', '.cjs', '.json', '.astro'];
 
 function safePath(raw) {
@@ -34,6 +35,45 @@ function declaredPatterns(manifest) {
   });
 }
 
+// Deliberately accepts only a tiny, unambiguous subset of pnpm YAML:
+// packages:
+//   - 'packages/*'
+//   - apps/*
+// Comments, simple quoting and CRLF are supported. Anything else fails closed.
+function pnpmPatterns(root) {
+  const file = join(root, 'pnpm-workspace.yaml');
+  const stat = lstatSync(file);
+  if (!stat.isFile() || stat.size > MAX_WORKSPACE_BYTES) throw new Error('invalid or oversized pnpm workspace file');
+  const raw = readFileSync(file, 'utf8').replace(/^\uFEFF/, '');
+  let header = false;
+  const values = [];
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    if (!header) {
+      if (line !== 'packages:') throw new Error('unsupported YAML: expected packages: at root');
+      header = true;
+      continue;
+    }
+    const match = /^  -[ \t]+(.+?)\s*$/.exec(line);
+    if (!match) throw new Error('unsupported pnpm YAML field or item indentation');
+    let value = match[1];
+    if (/^["']/.test(value)) {
+      const quote = value[0];
+      const end = value.indexOf(quote, 1);
+      if (end < 1 || !/^\s*(?:#.*)?$/.test(value.slice(end + 1))) throw new Error('unsupported quoted pnpm workspace pattern');
+      value = value.slice(1, end);
+      if (value.includes(quote)) throw new Error('unsupported YAML escape/quote');
+    } else {
+      value = value.split(/\s+#/)[0].trim();
+      if (/[:"'\[\]{},&|>!]/.test(value)) throw new Error('unsupported pnpm YAML pattern');
+    }
+    values.push(value);
+  }
+  if (!header || !values.length) throw new Error('missing pnpm workspace packages list');
+  return declaredPatterns({ workspaces: values });
+}
+
 function matchesPattern(dir, pattern) {
   if (pattern.isDirectChild) return posix.dirname(dir) === pattern.parent && dir !== pattern.parent;
   return dir === pattern.parent;
@@ -61,33 +101,40 @@ function entryForSubpath(manifest, subpath) {
 }
 
 /**
- * Resolve only npm/yarn-style root workspaces with explicit local source entry points.
- * Unsupported package exports and ambiguous resolution fail closed.
+ * Resolve simple root npm/yarn workspaces or simple pnpm-workspace.yaml lists.
+ * Unknown YAML, conflicting roots and ambiguous exports must fail closed.
  */
 export function loadWorkspaces(root, files) {
   const fileSet = new Set(files);
   const diagnostics = [];
   const known = new Map();
-  if (!fileSet.has('package.json')) {
-    if (fileSet.has('pnpm-workspace.yaml')) diagnostics.push({ path: 'pnpm-workspace.yaml', reason: 'pnpm workspace resolution unsupported' });
-    return { diagnostics, resolve: () => ({ kind: 'external' }) };
-  }
   try {
-    const rootManifest = readManifest(root, 'package.json');
-    const patterns = declaredPatterns(rootManifest);
-    if (!patterns.length && fileSet.has('pnpm-workspace.yaml')) {
-      diagnostics.push({ path: 'pnpm-workspace.yaml', reason: 'pnpm workspace declarations are not supported' });
+    const rootPatterns = fileSet.has('package.json') ? declaredPatterns(readManifest(root, 'package.json')) : [];
+    const hasPnpm = fileSet.has('pnpm-workspace.yaml');
+    const pnpm = hasPnpm ? pnpmPatterns(root) : [];
+    if (hasPnpm && rootPatterns.length) {
+      const names = patterns => patterns.map(p => p.parent + (p.isDirectChild ? '/*' : '')).sort();
+      if (JSON.stringify(names(rootPatterns)) !== JSON.stringify(names(pnpm))) {
+        throw new Error('conflicting pnpm and package.json workspace declarations');
+      }
     }
+    const patterns = hasPnpm ? pnpm : rootPatterns;
+    let matchedManifests = 0;
     for (const manifestPath of files.filter(p => p !== 'package.json' && p.endsWith('/package.json'))) {
       const dir = posix.dirname(manifestPath);
       if (!patterns.some(pattern => matchesPattern(dir, pattern))) continue;
+      matchedManifests++;
       const pkg = readManifest(root, manifestPath);
       if (typeof pkg.name !== 'string' || !/^(?:@[a-zA-Z0-9._-]+\/)?[a-zA-Z0-9._-]+$/.test(pkg.name)) throw new Error('invalid workspace package name at ' + manifestPath);
       if (known.has(pkg.name)) throw new Error('duplicate workspace package name: ' + pkg.name);
       known.set(pkg.name, { dir, manifest: pkg });
     }
+    if (patterns.length && !matchedManifests) throw new Error('no package manifests matched workspace patterns');
   } catch (error) {
-    diagnostics.push({ path: 'package.json', reason: 'unsupported workspace configuration: ' + error.message });
+    diagnostics.push({
+      path: fileSet.has('pnpm-workspace.yaml') ? 'pnpm-workspace.yaml' : 'package.json',
+      reason: 'unsupported workspace configuration: ' + error.message
+    });
     known.clear();
   }
 
