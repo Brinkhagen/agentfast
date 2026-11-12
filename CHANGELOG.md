@@ -8,6 +8,18 @@ All notable changes to AgentFast are documented here. Keep old release notes and
 - Independent validation on real external React/Astro repositories.
 - Reproducible benchmark comparisons with framework-native test selection.
 
+## [0.6.0] - 2026-11-12
+
+### Added
+- Conservative support for simple pnpm `pnpm-workspace.yaml` package declarations and source exports.
+- Documentation of supported YAML syntax, conflicting declarations and safe full-suite fallback.
+- Seven pnpm regression scenarios plus a reproducible real-Git CLI demo in `npm run verify`.
+
+### Safety and compatibility
+- Advanced pnpm globs, exclusions, anchors, extra YAML keys and ambiguous configuration require full tests.
+- Existing JSON `schemaVersion: 1`, CLI flags, and experimental symbol preview are unchanged.
+- Full protected CI remains mandatory; npm registry publication requires separate authentication.
+
 ## [0.5.0] - 2026-11-08
 
 ### Added

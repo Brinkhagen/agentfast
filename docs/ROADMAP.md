@@ -43,6 +43,12 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 - Strict JSON-only `--symbol-impact` option, with no effect on conservative test selection
 - Safe diagnostics for unsupported syntax and an optional TypeScript integration test workflow
 
+## v0.6.0 — November 12, 2026
+
+- Simple pnpm workspace package import resolution with strict YAML subset and full-suite fallback
+- Seven new regression scenarios and executable pnpm Git fixture in CI
+- Clear npm/yarn/pnpm compatibility documentation
+
 ## Proposed next milestones (not shipped)
 
 1. **Validation:** Compare AgentFast recommendations with Vitest's native changed/related test selection on real-world projects; synthetic CLI timings alone are not comparative evidence. See [issue #5](https://github.com/Brinkhagen/agentfast/issues/5).
