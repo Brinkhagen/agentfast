@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: node benchmarks/vitest-selection.mjs --output "$RUNNER_TEMP/vitest-comparison.json"
       - name: Upload raw machine-readable comparison
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: agentfast-vitest-controlled-comparison
           path: ${{ runner.temp }}/vitest-comparison.json
