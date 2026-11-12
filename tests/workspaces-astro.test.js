@@ -102,7 +102,7 @@ test('pnpm-only workspaces are not falsely marked as analyzed', t => {
     'packages/ui/tests/foo.test.ts': "import '../src/foo';"
   });
   assert.equal(plan(root, 'packages/ui/src/foo.ts').decision.mode, 'full');
-  assert.match(plan(root, 'packages/ui/src/foo.ts').diagnostics[0].reason, /pnpm/);
+  assert.match(plan(root, 'packages/ui/src/foo.ts').diagnostics[0].reason, /workspace/i);
 });
 
 test('workspace manifest edits retain high-risk full suite', t => {
@@ -165,4 +165,81 @@ test('glob imports require broad tests when import graph is incomplete', t => {
     'tests/page.test.ts': "import '../src/Page';"
   });
   assert.equal(plan(root, 'src/widgets.ts').decision.mode, 'full');
+});
+
+
+test('simple pnpm workspaces trace package source through React imports', t => {
+  const root = fixture(t, {
+    ...mono,
+    'package.json': JSON.stringify({ private: true }),
+    'pnpm-workspace.yaml': "packages:\n  - 'packages/*'\n  - \"apps/*\"\n",
+  });
+  const p = plan(root, 'packages/ui/src/button.tsx');
+  assert.equal(p.decision.mode, 'targeted');
+  assert.deepEqual(p.affectedTests, ['apps/web/tests/app.test.tsx']);
+});
+
+test('pnpm workspace yaml comments, CRLF, and unquoted simple paths', t => {
+  const root = fixture(t, {
+    ...mono,
+    'package.json': JSON.stringify({ private: true }),
+    'pnpm-workspace.yaml': "# workspaces\r\npackages:\r\n  - packages/* # UI packages\r\n  - apps/*\r\n"
+  });
+  assert.equal(plan(root, 'packages/ui/src/button.tsx').decision.mode, 'targeted');
+});
+
+test('matching npm and pnpm declarations are accepted safely', t => {
+  const root = fixture(t, { ...mono, 'pnpm-workspace.yaml': "packages:\n  - apps/*\n  - packages/*\n" });
+  assert.equal(plan(root, 'packages/ui/src/button.tsx').decision.mode, 'targeted');
+});
+
+test('conflicting package.json and pnpm workspace declarations require full suite', t => {
+  const root = fixture(t, { ...mono, 'pnpm-workspace.yaml': "packages:\n  - packages/*\n" });
+  const p = plan(root, 'packages/ui/src/button.tsx');
+  assert.equal(p.decision.mode, 'full');
+  assert.match(p.diagnostics[0].reason, /conflicting/);
+});
+
+test('unsupported pnpm glob exclusions and recursive globs fall back to full', t => {
+  for (const yaml of [
+    "packages:\n  - 'packages/**'\n",
+    "packages:\n  - '!apps/*'\n",
+    "packages: [packages/*]\n",
+    "packages:\n  - packages/*\ncatalog:\n  react: 19\n",
+    "packages:\n    - packages/*\n"
+  ]) {
+    const root = fixture(t, {
+      ...mono,
+      'package.json': JSON.stringify({ private: true }),
+      'pnpm-workspace.yaml': yaml
+    });
+    assert.equal(plan(root, 'packages/ui/src/button.tsx').decision.mode, 'full');
+  }
+});
+
+test('unsupported pnpm syntax never creates confident targeted recommendations', t => {
+  for (const yaml of [
+    "packages:\n  - 'packages/*' garbage\n",
+    "packages:\n  - packages/* &anchor\n",
+    "packages:\n  - \"packages/*\n",
+    "other:\n  - packages/*\n"
+  ]) {
+    const root = fixture(t, {
+      ...mono,
+      'package.json': JSON.stringify({ private: true }),
+      'pnpm-workspace.yaml': yaml
+    });
+    const p = plan(root, 'packages/ui/src/button.tsx');
+    assert.equal(p.decision.mode, 'full');
+    assert.match(p.diagnostics[0].reason, /workspace configuration/);
+  }
+});
+
+test('pnpm changed workspace config retains full verification', t => {
+  const root = fixture(t, {
+    ...mono,
+    'package.json': JSON.stringify({ private: true }),
+    'pnpm-workspace.yaml': "packages:\n  - packages/*\n  - apps/*\n"
+  });
+  assert.equal(plan(root, 'pnpm-workspace.yaml').decision.mode, 'full');
 });
