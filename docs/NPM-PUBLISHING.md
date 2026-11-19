@@ -48,3 +48,9 @@ This workflow checks out exactly the published GitHub tag, verifies package and 
 - **GitHub Release exists but npm does not:** The two publishing pipelines are independent.
 
 Until an npm page and an actual successful publish are verified, say **"npm publication pending"**, not "published".
+
+## v0.7.0 publishing preflight
+
+The manual workflow is updated to `actions/checkout@v7`, `actions/setup-node@v7` with Node.js 24, and `package-manager-cache: false`. It now checks the npm registry for an already-published immutable version before attempting OIDC publication; non-404 registry errors stop the workflow.
+
+**The connected GitHub account is not an npm login.** A legitimately authorized owner must finish registration, scope ownership, first publication and trusted-publisher configuration directly on npmjs.com. npm defaults new trusted publishers to stage permission; explicitly allow `npm publish` if using this workflow. New unvalidated trusted-publisher configurations expire after two days, so set them up only when ready to publish. Never share credentials or store long-lived publication tokens here.

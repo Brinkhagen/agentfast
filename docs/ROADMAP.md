@@ -49,6 +49,13 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 - Seven new regression scenarios and executable pnpm Git fixture in CI
 - Clear npm/yarn/pnpm compatibility documentation
 
+## v0.7.0 — November 19, 2026
+
+- Opt-in AST consumer-evidence preview for named imports and re-export chains, without test selection narrowing
+- Bounded scans and explicit uncertainty reporting with regression fixtures
+- npm release preflight hardening; registry ownership and publication still pending
+- Continued outreach for independent external beta evidence, not yet verified
+
 ## Proposed next milestones (not shipped)
 
 1. **Validation:** Compare AgentFast recommendations with Vitest's native changed/related test selection on real-world projects; synthetic CLI timings alone are not comparative evidence. See [issue #5](https://github.com/Brinkhagen/agentfast/issues/5).

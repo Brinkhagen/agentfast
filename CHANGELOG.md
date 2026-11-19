@@ -8,6 +8,24 @@ All notable changes to AgentFast are documented here. Keep old release notes and
 - Independent validation on real external React/Astro repositories.
 - Reproducible benchmark comparisons with framework-native test selection.
 
+## [0.7.0] - 2026-11-19
+
+### Experimental research
+- Added an optional TypeScript AST possible-consumer preview for named and default exported symbol changes.
+- Traverses direct named imports and re-export barrels, then file-level transitive possible tests.
+- Added regression fixtures for aliases/uncertainty, import cycles, named/default imports and barrel imports.
+- Bounded module scans and explicit diagnostics; no new required runtime dependencies.
+
+### Publishing and validation
+- Hardened manual npm OIDC workflow: current Actions versions, no privileged cache, guard against re-publishing immutable versions.
+- Verified Node 20/22 cross-platform CI, TypeScript AST fixture tests and CodeQL on the release candidate.
+- Moved controlled Vitest comparison to an isolated Node 24 job for reliable dependency installation.
+
+### Safety
+- `schemaVersion: 1`, main test selection and full-CI requirement remain unchanged.
+- Consumer hints are **not** an exclusion list and not validated symbol-accurate test selection.
+- npm publication and independent external beta validation remain open until actually confirmed.
+
 ## [0.6.0] - 2026-11-12
 
 ### Added
