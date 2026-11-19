@@ -25,3 +25,7 @@ A change in an exported component may trigger every test importing the same file
 - Documented optional dependency footprint, CPU/memory bounds and threat model
 
 The current conservative file graph remains the default. No symbol-level speed or precision promise should appear in a release until these gates pass.
+
+## Research prototype update (November 2026)
+
+The opt-in JSON `symbolImpact.consumerPreview` now records bounded AST evidence for direct named imports and possible file-level transitive consumers. It intentionally cannot prove safe narrowing. Named import matches and conservative transitive file traversal are useful review clues, not a symbol-accurate dependency graph. The independent external recall oracle, exhaustive side-effects resolution, alias/workspace support and CPU/memory validation gates above remain open.
