@@ -45,14 +45,14 @@ Both visuals are styled presentations of output from `node examples/demo.mjs`; t
 
 ## Quick start
 
-> **Latest release:** [AgentFast v0.6.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.6.0) includes a versioned `.tgz` archive after cross-platform CI. [v0.5.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.5.0). **npm registry publication is not confirmed.**
+> **Latest release:** [AgentFast v0.7.0 on GitHub Releases](https://github.com/Brinkhagen/agentfast/releases/tag/v0.7.0) includes a versioned `.tgz` archive after successful cross-platform CI. [v0.6.0 remains available](https://github.com/Brinkhagen/agentfast/releases/tag/v0.6.0). **npm registry publication is not confirmed.**
 
 **Requirements:** Node.js 20+ and Git.
 
 **Fast installation from the GitHub Release (without npm registry):**
 
 ```bash
-npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.6.0/brinkhagen-agentfast-0.6.0.tgz
+npm install -g https://github.com/Brinkhagen/agentfast/releases/download/v0.7.0/brinkhagen-agentfast-0.7.0.tgz
 agentfast --help
 ```
 
@@ -105,6 +105,12 @@ On a fresh checkout, ensure `origin/main` exists and you have fetched the base h
 ```
 
 The excerpt above shows the `decision` field from the complete versioned schema (`schemaVersion: 1`). The full report also includes changed paths, risk reasons, candidate tests, and analysis diagnostics.
+
+### New in v0.7.0: experimental AST consumer evidence
+
+`--symbol-impact` (JSON-only, optional TypeScript compiler) now reports `symbolImpact.consumerPreview`: read-only possible consumers of changed exported names through named/default imports, barrels and **file-level** transitive edges. It is strictly a review aid: **no tests are excluded, no symbol-accurate selection is claimed, and full protected CI remains mandatory**. Unsupported imports and dynamic calls produce diagnostics. [Safety and known limitations](docs/SYMBOL-PREVIEW.md).
+
+npm publishing now has an immutable-version guard and updated GitHub Actions/OIDC settings. The registry still requires legitimate `@brinkhagen` account ownership and an approved trusted publisher.
 
 ### New in v0.6.0: simple pnpm workspaces
 
@@ -276,6 +282,8 @@ AgentFast is maintained by [BRINKHAGEN](https://github.com/Brinkhagen). We welco
 - [Launch kit: Show HN, Reddit, DEV and social posts](docs/LAUNCH-KIT.md)
 - [Community growth and adoption evidence](docs/GROWTH.md)
 - [GitHub discoverability and recommended topics](docs/DISCOVERABILITY.md)
+
+- [v0.7.0 release notes](.github/RELEASE_NOTES_v0.7.0.md)
 
 **License:** [MIT](LICENSE), © 2026 BRINKHAGEN UG (haftungsbeschränkt).  
 **Disclaimer:** Independent community tooling. Not affiliated with or endorsed by OpenAI, Anthropic, GitHub, Vitest, Jest, or other vendors.

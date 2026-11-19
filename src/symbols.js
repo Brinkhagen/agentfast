@@ -1,3 +1,4 @@
+import { previewSymbolConsumers } from './symbol-consumers.js';
 import { createRequire } from 'node:module';
 import { lstatSync, readFileSync } from 'node:fs';
 import { resolve, join, extname } from 'node:path';
@@ -109,5 +110,6 @@ export function analyzeSymbolChanges(root, base, changes, { typescript } = {}) {
       interpretation: 'Direct top-level exported declarations only; not a complete symbol dependency graph'
     });
   }
-  return { status: diagnostics.length ? 'partial' : 'preview', parser: 'typescript ' + ts.version, changes: output, diagnostics, caveat };
+  const consumerPreview = previewSymbolConsumers(root, output, { typescript: ts });
+  return { status: diagnostics.length ? 'partial' : 'preview', parser: 'typescript ' + ts.version, changes: output, diagnostics, caveat, consumerPreview };
 }
