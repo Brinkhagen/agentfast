@@ -1,15 +1,14 @@
-name: GitHub Release
+name: Scheduled GitHub Release
 
-# Only publish versions which have passed the complete cross-platform CI matrix.
-# This workflow runs solely for successful pushes to main from this repository.
+# No release on ordinary pushes: approved + due + verified only.
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    branches: [main]
+  schedule:
+    - cron: '37 10 * * *' # UTC; best-effort GitHub scheduler
+  workflow_dispatch:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: agentfast-release
@@ -17,55 +16,88 @@ concurrency:
 
 jobs:
   release:
-    name: Release verified version
-    if: >-
-      ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.head_branch == 'main' }}
+    name: Verified, approved and due publication
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
-          node-version: "22"
+          node-version: '22'
           cache: npm
-      - name: Install
-        run: npm ci
-      - name: Verify
-        run: npm run verify
-      - name: Publish only if this version does not exist
+
+      - name: Evaluate release plan
+        id: gate
+        run: node scripts/release-gate.mjs
+
+      - name: Preserve existing releases
+        id: published
+        if: steps.gate.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_COMMIT: ${{ github.event.workflow_run.head_sha }}
+          RELEASE_VERSION: ${{ steps.gate.outputs.version }}
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="$(node -p "require('./package.json').version")"
-          LOCK_VERSION="$(node -p "require('./package-lock.json').version")"
-          if [[ "$VERSION" != "$LOCK_VERSION" ]]; then
-            echo "Package and lockfile versions disagree; release blocked." >&2
-            exit 1
+          if gh release view "v$RELEASE_VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Existing v$RELEASE_VERSION remains unchanged." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Require complete CI and CodeQL on exact main commit
+        if: steps.gate.outputs.publish == 'true' && steps.published.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA="$(git rev-parse HEAD)"
           CURRENT_MAIN="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
-          if [[ "$RELEASE_COMMIT" != "$CURRENT_MAIN" ]]; then
-            echo "A newer main commit exists. Releasing only the latest verified main commit."
-            exit 0
-          fi
-          TAG="v$VERSION"
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-            echo "Refusing invalid semantic version: $VERSION" >&2
+          if [[ "$SHA" != "$CURRENT_MAIN" ]]; then
+            echo "Main changed; retry on its latest verified commit." >&2
             exit 1
           fi
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "$TAG already published: preserving the existing immutable release."
+          RUNS="$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/runs" -f head_sha="$SHA" -f event=push -f per_page=100)"
+          for CHECK in CI CodeQL; do
+            CONCLUSION="$(jq -r --arg name "$CHECK" --arg sha "$SHA" \
+              '[.workflow_runs[] | select(.name == $name and .head_sha == $sha and .event == "push")] | sort_by(.created_at) | last | .conclusion // empty' <<< "$RUNS")"
+            if [[ "$CONCLUSION" != "success" ]]; then
+              echo "Required $CHECK check on $SHA not successful (result: $CONCLUSION)." >&2
+              exit 1
+            fi
+          done
+          echo "Exact commit $SHA passed full CI and CodeQL." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Independently rerun tests and package checks
+        if: steps.gate.outputs.publish == 'true' && steps.published.outputs.exists == 'false'
+        run: |
+          npm ci
+          npm run verify
+          npm pack --dry-run
+
+      - name: Publish immutable release with reviewed notes
+        if: steps.gate.outputs.publish == 'true' && steps.published.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.gate.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          NOTES=".github/RELEASE_NOTES_v$RELEASE_VERSION.md"
+          test -s "$NOTES"
+          if gh release view "v$RELEASE_VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Version already exists; preserving immutable release."
             exit 0
           fi
           FILE="$(npm pack --silent | tail -n 1)"
           test -f "$FILE"
-          NOTES=".github/RELEASE_NOTES_$TAG.md"
-          if [[ -f "$NOTES" ]]; then
-            gh release create "$TAG" "$FILE" --repo "$GITHUB_REPOSITORY" --target "$RELEASE_COMMIT" --title "AgentFast $TAG" --notes-file "$NOTES"
-          else
-            gh release create "$TAG" "$FILE" --repo "$GITHUB_REPOSITORY" --target "$RELEASE_COMMIT" --title "AgentFast $TAG" --generate-notes
-          fi
+          gh release create "v$RELEASE_VERSION" "$FILE" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$(git rev-parse HEAD)" \
+            --title "AgentFast v$RELEASE_VERSION" \
+            --notes-file "$NOTES"
+          echo "Published verified AgentFast v$RELEASE_VERSION." >> "$GITHUB_STEP_SUMMARY"
