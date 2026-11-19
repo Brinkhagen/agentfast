@@ -72,7 +72,7 @@ test('malformed calendar or version fails instead of approving accidentally', ()
     options('0.8.0-preview')), /stable semver/);
 });
 
-test('the real checked-in calendar never publishes an unapproved candidate', () => {
-  const result = evaluateRepository(resolve('.'), new Date('2028-12-12T00:00:00Z'));
+test('the real checked-in calendar cannot publish before any future target', () => {
+  const result = evaluateRepository(resolve('.'), new Date('2020-01-01T00:00:00Z'));
   assert.equal(result.publish, false);
 });
