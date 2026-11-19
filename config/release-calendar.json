@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "timezone": "Europe/Berlin",
+  "policy": "Target dates are conditional. Only explicitly approved code that passes CI and CodeQL may be published.",
+  "milestones": [
+    {
+      "version": "0.7.0",
+      "status": "released",
+      "releasedAt": "2026-11-19T15:00:29Z",
+      "name": "AST Evidence",
+      "summary": "Optional safe AST impact hints and hardened publishing workflow."
+    },
+    {
+      "version": "0.7.1",
+      "status": "planned",
+      "targetAt": "2026-11-27T10:30:00Z",
+      "name": "Quality & Polish",
+      "summary": "Conditional patch; skip if there are no meaningful fixes."
+    },
+    {
+      "version": "0.8.0",
+      "status": "planned",
+      "targetAt": "2026-12-11T10:30:00Z",
+      "name": "Deep Analysis",
+      "summary": "Improve import resolution, diagnostics and reproducible validation."
+    },
+    {
+      "version": "0.9.0",
+      "status": "planned",
+      "targetAt": "2027-01-08T10:30:00Z",
+      "name": "Stability Candidate",
+      "summary": "Address verified regressions and review independent beta evidence."
+    },
+    {
+      "version": "1.0.0",
+      "status": "planned",
+      "targetAt": "2027-02-05T10:30:00Z",
+      "name": "Stable Milestone",
+      "summary": "Release only after compatibility, safety, external beta and distribution gates are satisfied."
+    }
+  ]
+}

@@ -11,13 +11,15 @@
   [![No runtime dependencies](https://img.shields.io/badge/runtime_deps-0-A883FF?style=flat-square)](package.json)
   [![Latest GitHub Release](https://img.shields.io/github/v/release/Brinkhagen/agentfast?style=flat-square&color=22D6EA)](https://github.com/Brinkhagen/agentfast/releases/latest)
 
-  [Why AgentFast?](#why-agentfast) · [Install](#quick-start) · [How it works](#how-it-works) · [Safety policy](#safety-first) · [Contribute](CONTRIBUTING.md) · [Roadmap](docs/ROADMAP.md)
+  [Why AgentFast?](#why-agentfast) · [Release calendar](docs/RELEASE.md) · [Install](#quick-start) · [How it works](#how-it-works) · [Safety policy](#safety-first) · [Contribute](CONTRIBUTING.md) · [Roadmap](docs/ROADMAP.md)
 </div>
 
 <p align="center"><img src="docs/assets/agentfast-hero.svg" alt="AgentFast visual concept art with Git diff and test planning terminal" width="100%"></p>
 <p align="center"><sub>Conceptual brand illustration. The current CLI analyzes and recommends tests; it does not execute them automatically.</sub></p>
 
 > **🧪 Beta testers wanted!** If you use coding agents or work with Node.js/TypeScript, please try the [React/Astro beta verification](docs/REACT-ASTRO-BETA.md) and tell us what breaks. [Submit feedback](https://github.com/Brinkhagen/agentfast/issues/new?template=beta-feedback.yml). No API key, signup, or positive review required.
+
+> **Road to AgentFast v1.0.0:** v0.7.0 is released; future milestones target **27 Nov (optional patch), 11 Dec 2026, 8 Jan and 5 Feb 2027**. Planned releases are not available yet. Every release requires reviewed changes, green cross-platform CI/CodeQL, and explicit approval — no empty or backdated version drops. [View the public release calendar](docs/RELEASE.md) · [Engineering roadmap](docs/ROADMAP.md).
 
 ## Why AgentFast?
 

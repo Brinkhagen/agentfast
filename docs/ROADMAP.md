@@ -56,6 +56,19 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 - npm release preflight hardening; registry ownership and publication still pending
 - Continued outreach for independent external beta evidence, not yet verified
 
+## Road to v1.0.0 — planned, not shipped
+
+Future dates are public **engineering targets**, not claims that the code already exists. The [release calendar and complete quality gates](RELEASE.md) determine when each milestone is eligible.
+
+| Target (Berlin) | Milestone | Intended focus | Gate |
+| --- | --- | --- | --- |
+| 27 Nov 2026 | **v0.7.1 — Quality & Polish** | Optional bugfixes, CLI UX, verified regressions | Only if concrete fixes exist |
+| 11 Dec 2026 | **v0.8.0 — Deep Analysis** | Better dependency edge diagnostics, JS/TS import coverage, unknown-edge safety | Proven test fixtures and CI |
+| 8 Jan 2027 | **v0.9.0 — Stability Candidate** | Compatibility review, integration examples, external beta evidence | Safety, reproducibility, clear limitations |
+| 5 Feb 2027 | **v1.0.0 — Stable Milestone** | Stable supported surface and documented long-term expectations | Independent beta validation, no unresolved high-risk regressions, explicit review |
+
+**No auto-published empty versions.** Future releases remain in planned state until implementation, verification, release notes and a human approval are in place. A missed target is delayed, not represented as shipped.
+
 ## Proposed next milestones (not shipped)
 
 1. **Validation:** Compare AgentFast recommendations with Vitest's native changed/related test selection on real-world projects; synthetic CLI timings alone are not comparative evidence. See [issue #5](https://github.com/Brinkhagen/agentfast/issues/5).
@@ -64,4 +77,4 @@ AgentFast is a public experimental beta focused on explainable, risk-aware test 
 
 Each new public release must include the previous versions, change log, tests and checked release notes.
 
-**Still under research:** symbol-accurate dependency propagation and test selection. The v0.5 preview does not claim those capabilities. See [Issue #14](https://github.com/Brinkhagen/agentfast/issues/14).
+**Still under research:** symbol-accurate dependency propagation and test selection. The v0.7 research preview does not claim those capabilities. See [Issue #14](https://github.com/Brinkhagen/agentfast/issues/14).
