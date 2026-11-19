@@ -65,3 +65,15 @@ The implementation uses TypeScript's `createSourceFile` AST parser, comparing ex
 A dedicated [GitHub Actions workflow](../.github/workflows/symbols.yml) installs a pinned TypeScript compiler for tests and verifies the AST preview independently on Node.js 20 and 22. Normal Linux/macOS/Windows CI continues to run without a mandatory TypeScript dependency.
 
 **Full protected CI is still required before merging or releasing.** For any symbol-based test narrowing, the [RFC](SYMBOL-IMPACT-RFC.md) defines additional correctness gates.
+
+## Experimental AST consumer evidence (research only)
+
+When the optional TypeScript parser is installed, `symbolImpact.consumerPreview` also reports possible direct importers and file-level transitive tests for changed *named exported declarations*. Re-export barrels are traversed as **whole files**, never with symbol-level precision. This is a bounded, read-only AST preview; it does not execute a project or contact remote services.
+
+- A direct named import or re-export is matched against the changed original exported name; default imports and wildcard imports are considered potential consumers.
+- Transitive results follow the **entire file-level reverse graph** and are intentionally overinclusive.
+- Aliases, package imports, computed/dynamic imports, CommonJS, malformed syntax, file limits and unsupported resolution yield explicit diagnostics or inconclusive status. Non-relative import paths are not resolved by this preview.
+- Module initialization, side effects, indirect callbacks and framework compilers can affect tests even if the preview lists no candidates. **Empty lists are never evidence of safety.**
+- The existing `decision`, `affectedTests`, and `schemaVersion: 1` are unchanged. **Never run only `consumerPreview.possibleTests` or skip existing CI based on this field.**
+
+This adds research evidence; it does not satisfy [symbol-accurate test selection](SYMBOL-IMPACT-RFC.md). Independent recall and false-negative validation are still prerequisites for a future narrowing algorithm.
