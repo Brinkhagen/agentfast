@@ -29,15 +29,16 @@ jobs:
             echo "Only stable semver versions are accepted." >&2
             exit 1
           }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: v${{ inputs.version }}
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
       - name: Install supported npm CLI
         run: npm install --global npm@latest
       - name: Verify immutable tagged release and package metadata
@@ -55,5 +56,21 @@ jobs:
           npm ci
           npm run verify
           npm pack --dry-run
+      - name: Block accidental re-publication of an immutable npm version
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if npm view "@brinkhagen/agentfast@$VERSION" version --json >"$RUNNER_TEMP/npm-version.json" 2>"$RUNNER_TEMP/npm-version-error.log"; then
+            echo "Version $VERSION is already published. Refusing to overwrite." >&2
+            exit 1
+          fi
+          if ! grep -q 'E404' "$RUNNER_TEMP/npm-version-error.log"; then
+            echo "npm registry query failed for a reason other than missing version:" >&2
+            cat "$RUNNER_TEMP/npm-version-error.log" >&2
+            exit 1
+          fi
+          echo "Registry confirms that version $VERSION does not exist."
       - name: Publish to npm with provenance (requires npm trusted publisher)
         run: npm publish --access public --provenance
